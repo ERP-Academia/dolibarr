@@ -213,7 +213,7 @@ class BordereauChequeBlochet extends ModeleChequeReceipts
 	/**
 	 *	Generate Header
 	 *
-	 *	@param  PDF			$pdf        	Pdf object
+	 *	@param  TCPDF		$pdf        	Pdf object
 	 *	@param  int			$page        	Current page number
 	 *	@param  int			$pages       	Total number of pages
 	 *	@param	Translate	$outputlangs	Object language for output
@@ -321,7 +321,7 @@ class BordereauChequeBlochet extends ModeleChequeReceipts
 	/**
 	 *	Output array
 	 *
-	 *	@param	PDF			$pdf			PDF object
+	 *	@param	TCPDF		$pdf			PDF object
 	 *	@param	int			$pagenb			Page nb
 	 *	@param	int			$pages			Pages
 	 *	@param	Translate	$outputlangs	Object lang
@@ -342,26 +342,17 @@ class BordereauChequeBlochet extends ModeleChequeReceipts
 		$num = count($this->lines);
 		for ($j = 0; $j < $num; $j++)
 		{
-		    $lineinpage++;
+            // Dynamic max line heigh calculation
+            $dynamic_line_height = array();
+            $dynamic_line_height[] = $pdf->getStringHeight(60, $outputlangs->convToOutputCharset($this->lines[$j]->bank_chq));
+            $dynamic_line_height[] = $pdf->getStringHeight(80, $outputlangs->convToOutputCharset($this->lines[$j]->emetteur_chq));
+            $max_line_height = max($dynamic_line_height);
+            // Calculate number of line used function of estimated line size
+            if ($max_line_height > $this->line_height) $nb_lines = floor($max_line_height / $this->line_height) + 1;
+            else $nb_lines = 1;
 
-			$pdf->SetXY(1, $this->tab_top + 10 + $yp);
-			$pdf->MultiCell(8, $this->line_height, $j + 1, 0, 'R', 0);
-
-			$pdf->SetXY(10, $this->tab_top + 10 + $yp);
-			$pdf->MultiCell(30, $this->line_height, $this->lines[$j]->num_chq ? $this->lines[$j]->num_chq : '', 0, 'L', 0);
-
-			$pdf->SetXY(40, $this->tab_top + 10 + $yp);
-			$pdf->MultiCell(70, $this->line_height, dol_trunc($outputlangs->convToOutputCharset($this->lines[$j]->bank_chq), 44), 0, 'L', 0);
-
-			$pdf->SetXY(100, $this->tab_top + 10 + $yp);
-			$pdf->MultiCell(80, $this->line_height, dol_trunc($outputlangs->convToOutputCharset($this->lines[$j]->emetteur_chq), 50), 0, 'L', 0);
-
-			$pdf->SetXY(180, $this->tab_top + 10 + $yp);
-			$pdf->MultiCell(20, $this->line_height, price($this->lines[$j]->amount_chq), 0, 'R', 0);
-
-			$yp = $yp + $this->line_height;
-
-			if ($lineinpage >= $this->line_per_page && $j < (count($this->lines) - 1))
+            // Add page break if we do not have space to add current line
+			if ($lineinpage >= ($this->line_per_page - 1))
 			{
 			    $lineinpage = 0; $yp = 0;
 
@@ -373,6 +364,25 @@ class BordereauChequeBlochet extends ModeleChequeReceipts
                 $pdf->MultiCell(0, 3, ''); // Set interline to 3
                 $pdf->SetTextColor(0, 0, 0);
 			}
+
+            $lineinpage += $nb_lines;
+
+			$pdf->SetXY(1, $this->tab_top + 10 + $yp);
+			$pdf->MultiCell(8, $this->line_height, $j + 1, 0, 'R', 0);
+
+			$pdf->SetXY(10, $this->tab_top + 10 + $yp);
+			$pdf->MultiCell(30, $this->line_height, $this->lines[$j]->num_chq ? $this->lines[$j]->num_chq : '', 0, 'L', 0);
+
+			$pdf->SetXY(40, $this->tab_top + 10 + $yp);
+			$pdf->MultiCell(60, $this->line_height, $outputlangs->convToOutputCharset($this->lines[$j]->bank_chq, 44), 0, 'L', 0);
+
+			$pdf->SetXY(100, $this->tab_top + 10 + $yp);
+			$pdf->MultiCell(80, $this->line_height, $outputlangs->convToOutputCharset($this->lines[$j]->emetteur_chq, 50), 0, 'L', 0);
+
+			$pdf->SetXY(180, $this->tab_top + 10 + $yp);
+			$pdf->MultiCell(20, $this->line_height, price($this->lines[$j]->amount_chq), 0, 'R', 0);
+
+            $yp = $yp + ($this->line_height * $nb_lines);
 		}
 	}
 
@@ -380,7 +390,7 @@ class BordereauChequeBlochet extends ModeleChequeReceipts
 	/**
 	 *  Show footer of page. Need this->emetteur object
      *
-	 *  @param	PDF			$pdf     			PDF
+	 *  @param	TCPDF		$pdf     			PDF
 	 *  @param	Object		$object				Object to show
 	 *  @param	Translate	$outputlangs		Object lang for output
 	 *  @param	int			$hidefreetext		1=Hide free text
@@ -394,6 +404,8 @@ class BordereauChequeBlochet extends ModeleChequeReceipts
 		$showdetails = $conf->global->MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS;
 
 		// Line of free text
+		$substitutionarray = pdf_getSubstitutionArray($outputlangs, null, $object);
+		complete_substitutions_array($substitutionarray, $outputlangs, $object);
 		$newfreetext = '';
 		$paramfreetext = 'BANK_CHEQUERECEIPT_FREE_TEXT';
 		if (!empty($conf->global->$paramfreetext))

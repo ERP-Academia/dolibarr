@@ -116,9 +116,7 @@ $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."usergroup_rights as ugr ON ugr.fk_usergrou
 if (!empty($conf->multicompany->enabled) && $conf->entity == 1 && ($conf->global->MULTICOMPANY_TRANSVERSE_MODE || ($user->admin && !$user->entity)))
 {
 	$sql .= " WHERE g.entity IS NOT NULL";
-}
-else
-{
+} else {
 	$sql .= " WHERE g.entity IN (0,".$conf->entity.")";
 }
 if (!empty($search_group)) natural_search(array("g.nom", "g.note"), $search_group);
@@ -152,11 +150,10 @@ if ($resql)
     print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
     print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
     print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
-    print '<input type="hidden" name="page" value="'.$page.'">';
     print '<input type="hidden" name="mode" value="'.$mode.'">';
     print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 
-    print_barre_liste($text, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, "", $num, $nbtotalofrecords, 'generic', 0, $newcardbutton, '', $limit);
+    print_barre_liste($text, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, "", $num, $nbtotalofrecords, 'object_group', 0, $newcardbutton, '', $limit, 0, 0, 1);
 
     if ($sall)
     {
@@ -222,9 +219,7 @@ if ($resql)
     print "</form>\n";
 
     $db->free($resql);
-}
-else
-{
+} else {
     dol_print_error($db);
 }
 

@@ -138,9 +138,7 @@ class Ccountry // extends CommonObject
 			}
 			$this->db->rollback();
 			return -1 * $error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
             return $this->id;
 		}
@@ -157,7 +155,6 @@ class Ccountry // extends CommonObject
      */
     public function fetch($id, $code = '', $code_iso = '')
     {
-    	global $langs;
         $sql = "SELECT";
   		$sql .= " t.rowid,";
   		$sql .= " t.code,";
@@ -185,13 +182,10 @@ class Ccountry // extends CommonObject
 
                 $this->db->free($resql);
                 return 1;
-            }
-            else {
+            } else {
                 return 0;
             }
-        }
-        else
-        {
+        } else {
       	    $this->error = "Error ".$this->db->lasterror();
             return -1;
         }
@@ -244,9 +238,7 @@ class Ccountry // extends CommonObject
 			}
 			$this->db->rollback();
 			return -1 * $error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
 			return 1;
 		}
@@ -284,9 +276,7 @@ class Ccountry // extends CommonObject
 			}
 			$this->db->rollback();
 			return -1 * $error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
 			return 1;
 		}

@@ -163,8 +163,7 @@ if (!empty($logosmall) && is_readable($conf->mycompany->dir_output.'/logos/thumb
 	$urllogo = DOL_URL_ROOT.'/viewimage.php?modulepart=mycompany&amp;entity='.$conf->entity.'&amp;file='.urlencode('logos/thumbs/'.$logosmall);
 	$urllogofull = $dolibarr_main_url_root.'/viewimage.php?modulepart=mycompany&entity='.$conf->entity.'&file='.urlencode('logos/thumbs/'.$logosmall);
 	$width = 150;
-}
-elseif (!empty($logo) && is_readable($conf->mycompany->dir_output.'/logos/'.$logo))
+} elseif (!empty($logo) && is_readable($conf->mycompany->dir_output.'/logos/'.$logo))
 {
 	$urllogo = DOL_URL_ROOT.'/viewimage.php?modulepart=mycompany&amp;entity='.$conf->entity.'&amp;file='.urlencode('logos/'.$logo);
 	$urllogofull = $dolibarr_main_url_root.'/viewimage.php?modulepart=mycompany&entity='.$conf->entity.'&file='.urlencode('logos/'.$logo);
@@ -181,13 +180,13 @@ if ($urllogo)
 	print '>';
 	print '</div>';
 	if (empty($conf->global->MAIN_HIDE_POWERED_BY)) {
-		print '<div class="poweredbypublicpayment opacitymedium right"><a href="https://www.dolibarr.org" target="dolibarr">'.$langs->trans("PoweredBy").'<br><img src="'.DOL_URL_ROOT.'/theme/dolibarr_logo.png" width="80px"></a></div>';
+		print '<div class="poweredbypublicpayment opacitymedium right"><a href="https://www.dolibarr.org" target="dolibarr">'.$langs->trans("PoweredBy").'<br><img src="'.DOL_URL_ROOT.'/theme/dolibarr_logo.svg" width="80px"></a></div>';
 	}
 	print '</div>';
 }
 
 
-print '<br><br>';
+print '<br><br><br>';
 
 
 if (!empty($conf->paypal->enabled))
@@ -221,9 +220,7 @@ if (!empty($conf->paypal->enabled))
 		        {
 		        	// Nothing to do
 		        	dol_syslog("Call to GetExpressCheckoutDetails return ".$ack, LOG_DEBUG, 0, '_payment');
-		        }
-		        else
-		        {
+		        } else {
 		        	dol_syslog("Call to GetExpressCheckoutDetails return error: ".json_encode($resArray), LOG_WARNING, '_payment');
 		        }
 
@@ -250,9 +247,7 @@ if (!empty($conf->paypal->enabled))
 		            $NOTE = urldecode($resArray2["NOTE"]);
 
 		            $ispaymentok = true;
-		        }
-		        else
-		        {
+		        } else {
 		        	dol_syslog("Call to DoExpressCheckoutPayment return error: ".json_encode($resArray2), LOG_WARNING, 0, '_payment');
 
 		            //Display a user friendly Error on the page using any of the following error information returned by PayPal
@@ -261,14 +256,10 @@ if (!empty($conf->paypal->enabled))
 		            $ErrorLongMsg = urldecode($resArray2["L_LONGMESSAGE0"]);
 		            $ErrorSeverityCode = urldecode($resArray2["L_SEVERITYCODE0"]);
 		        }
-		    }
-		    else
-		    {
+		    } else {
 		        dol_print_error('', 'Session expired');
 		    }
-		}
-		else
-		{
+		} else {
 		    dol_print_error('', '$PAYPALTOKEN not defined');
 		}
 	}
@@ -419,9 +410,7 @@ if ($ispaymentok)
 						$errmsg = $object->error;
 						$postactionmessages[] = $errmsg;
 						$ispostactionok = -1;
-					}
-					else
-					{
+					} else {
 						$postactionmessages[] = 'Subscription created';
 						$ispostactionok = 1;
 					}
@@ -442,9 +431,7 @@ if ($ispaymentok)
 						$postactionmessages[] = $object->error;
 						$postactionmessages = array_merge($postactionmessages, $object->errors);
 						$ispostactionok = -1;
-					}
-					else
-					{
+					} else {
 						if ($option == 'bankviainvoice')
 						{
 							$postactionmessages[] = 'Invoice, payment and bank record created';
@@ -508,8 +495,7 @@ if ($ispaymentok)
 									$postactionmessages[] = $errmsg;
 									$ispostactionok = -1;
 								}
-							}
-							catch (Exception $e) {
+							} catch (Exception $e) {
 								$error++;
 								$errmsg = 'Failed to save customer stripe id in database ; '.$e->getMessage();
 								$postactionmessages[] = $errmsg;
@@ -522,9 +508,7 @@ if ($ispaymentok)
 				if (!$error)
 				{
 					$db->commit();
-				}
-				else
-				{
+				} else {
 					$db->rollback();
 				}
 
@@ -589,9 +573,7 @@ if ($ispaymentok)
 							$errmsg = $object->error;
 							$postactionmessages[] = $errmsg;
 							$ispostactionok = -1;
-						}
-						else
-						{
+						} else {
 							if ($file) $postactionmessages[] = 'Email sent to member (with invoice document attached)';
 							else $postactionmessages[] = 'Email sent to member (without any attached document)';
 
@@ -599,25 +581,20 @@ if ($ispaymentok)
 						}
 					}
 				}
-			}
-			else
-			{
+			} else {
 				$postactionmessages[] = 'Failed to get a valid value for "amount paid" or "payment type" to record the payment of subscription for member '.$tmptag['MEM'].'. May be payment was already recorded.';
 				$ispostactionok = -1;
 			}
-		}
-		else
-		{
+		} else {
 			$postactionmessages[] = 'Member '.$tmptag['MEM'].' for subscription payed was not found';
 			$ispostactionok = -1;
 		}
-	}
-	elseif (array_key_exists('INV', $tmptag) && $tmptag['INV'] > 0)
+	} elseif (array_key_exists('INV', $tmptag) && $tmptag['INV'] > 0)
 	{
 		// Record payment
 		include_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-		$invoice = new Facture($db);
-		$result = $invoice->fetch($tmptag['INV']);
+		$object = new Facture($db);
+		$result = $object->fetch($tmptag['INV']);
 		if ($result)
 		{
 			$FinalPaymentAmt = $_SESSION["FinalPaymentAmt"];
@@ -646,11 +623,9 @@ if ($ispaymentok)
 				$paiement->datepaye = $now;
 				if ($currencyCodeType == $conf->currency)
 				{
-					$paiement->amounts = array($invoice->id => $FinalPaymentAmt); // Array with all payments dispatching with invoice id
-				}
-				else
-				{
-					$paiement->multicurrency_amounts = array($invoice->id => $FinalPaymentAmt); // Array with all payments dispatching
+					$paiement->amounts = array($object->id => $FinalPaymentAmt); // Array with all payments dispatching with invoice id
+				} else {
+					$paiement->multicurrency_amounts = array($object->id => $FinalPaymentAmt); // Array with all payments dispatching
 
 					$postactionmessages[] = 'Payment was done in a different currency that currency expected of company';
 					$ispostactionok = -1;
@@ -671,9 +646,7 @@ if ($ispaymentok)
 						$postactionmessages[] = $paiement->error.' '.join("<br>\n", $paiement->errors);
 						$ispostactionok = -1;
 						$error++;
-					}
-					else
-					{
+					} else {
 						$postactionmessages[] = 'Payment created';
 						$ispostactionok = 1;
 					}
@@ -689,22 +662,18 @@ if ($ispaymentok)
 					if ($bankaccountid > 0)
 					{
 						$label = '(CustomerInvoicePayment)';
-						if ($invoice->type == Facture::TYPE_CREDIT_NOTE) $label = '(CustomerInvoicePaymentBack)'; // Refund of a credit note
+						if ($object->type == Facture::TYPE_CREDIT_NOTE) $label = '(CustomerInvoicePaymentBack)'; // Refund of a credit note
 						$result = $paiement->addPaymentToBank($user, 'payment', $label, $bankaccountid, '', '');
 						if ($result < 0)
 						{
 							$postactionmessages[] = $paiement->error.' '.join("<br>\n", $paiement->errors);
 							$ispostactionok = -1;
 							$error++;
-						}
-						else
-						{
+						} else {
 							$postactionmessages[] = 'Bank transaction of payment created';
 							$ispostactionok = 1;
 						}
-					}
-					else
-					{
+					} else {
 						$postactionmessages[] = 'Setup of bank account to use in module '.$paymentmethod.' was not set. No way to record the payment.';
 						$ispostactionok = -1;
 						$error++;
@@ -714,26 +683,18 @@ if ($ispaymentok)
 				if (!$error)
 				{
 					$db->commit();
-				}
-				else
-				{
+				} else {
 					$db->rollback();
 				}
-			}
-			else
-			{
+			} else {
 				$postactionmessages[] = 'Failed to get a valid value for "amount paid" ('.$FinalPaymentAmt.') or "payment type" ('.$paymentType.') to record the payment of invoice '.$tmptag['INV'].'. May be payment was already recorded.';
 				$ispostactionok = -1;
 			}
-		}
-		else
-		{
+		} else {
 			$postactionmessages[] = 'Invoice payed '.$tmptag['INV'].' was not found';
 			$ispostactionok = -1;
 		}
-	}
-	else
-	{
+	} else {
 		// Nothing done
 	}
 }
@@ -748,10 +709,12 @@ if ($ispaymentok)
     $currencyCodeType   = $_SESSION['currencyCodeType'];
     $FinalPaymentAmt    = $_SESSION["FinalPaymentAmt"];
 
-    // Call trigger
-    $result = $object->call_trigger('PAYMENTONLINE_PAYMENT_OK', $user);
-    if ($result < 0) $error++;
-    // End call triggers
+    if (is_object($object) && method_exists($object, 'call_trigger')) {
+	    // Call trigger
+	    $result = $object->call_trigger('PAYMENTONLINE_PAYMENT_OK', $user);
+	    if ($result < 0) $error++;
+	    // End call triggers
+    }
 
     print $langs->trans("YourPaymentHasBeenRecorded")."<br>\n";
     if ($TRANSACTIONID) print $langs->trans("ThisIsTransactionId", $TRANSACTIONID)."<br><br>\n";
@@ -788,10 +751,8 @@ if ($ispaymentok)
 		    if (preg_match('/\d\.\d/', $appli))
 		    {
 		        if (!preg_match('/'.preg_quote(DOL_VERSION).'/', $appli)) $appli .= " (".DOL_VERSION.")"; // If new title contains a version that is different than core
-		    }
-		    else $appli .= " ".DOL_VERSION;
-		}
-		else $appli .= " ".DOL_VERSION;
+		    } else $appli .= " ".DOL_VERSION;
+		} else $appli .= " ".DOL_VERSION;
 
 		$urlback = $_SERVER["REQUEST_URI"];
 		$topic = '['.$appli.'] '.$companylangs->transnoentitiesnoconv("NewOnlinePaymentReceived");
@@ -802,17 +763,14 @@ if ($ispaymentok)
 			$content .= '<strong>'.$companylangs->trans("PaymentSubscription")."</strong><br><br>\n";
 			$content .= $companylangs->trans("MemberId").': <strong>'.$tmptag['MEM']."</strong><br>\n";
 			$content .= $companylangs->trans("Link").': <a href="'.$url.'">'.$url.'</a>'."<br>\n";
-		}
-		elseif (array_key_exists('INV', $tmptag))
+		} elseif (array_key_exists('INV', $tmptag))
 		{
 			$url = $urlwithroot."/compta/facture/card.php?id=".$tmptag['INV'];
 			$content .= '<strong>'.$companylangs->trans("Payment")."</strong><br><br>\n";
 			$content .= $companylangs->trans("InvoiceId").': <strong>'.$tmptag['INV']."</strong><br>\n";
 			//$content.=$companylangs->trans("ThirdPartyId").': '.$tmptag['CUS']."<br>\n";
 			$content .= $companylangs->trans("Link").': <a href="'.$url.'">'.$url.'</a>'."<br>\n";
-		}
-		else
-		{
+		} else {
 			$content .= $companylangs->transnoentitiesnoconv("NewOnlinePaymentReceived")."<br>\n";
 		}
 		$content .= $companylangs->transnoentities("PostActionAfterPayment").' : ';
@@ -820,13 +778,10 @@ if ($ispaymentok)
 		{
 			//$topic.=' ('.$companylangs->transnoentitiesnoconv("Status").' '.$companylangs->transnoentitiesnoconv("OK").')';
 			$content .= '<font color="green">'.$companylangs->transnoentitiesnoconv("OK").'</font>';
-		}
-		elseif ($ispostactionok == 0)
+		} elseif ($ispostactionok == 0)
 		{
 			$content .= $companylangs->transnoentitiesnoconv("None");
-		}
-		else
-		{
+		} else {
 			$topic .= ($ispostactionok ? '' : ' ('.$companylangs->trans("WarningPostActionErrorAfterPayment").')');
 			$content .= '<font color="red">'.$companylangs->transnoentitiesnoconv("Error").'</font>';
 		}
@@ -864,16 +819,12 @@ if ($ispaymentok)
 		{
 			dol_syslog("EMail sent to ".$sendto, LOG_DEBUG, 0, '_payment');
 			//dol_syslog("EMail sent to ".$sendto, LOG_DEBUG, 0);
-		}
-		else
-		{
+		} else {
 			dol_syslog("Failed to send EMail to ".$sendto, LOG_ERR, 0, '_payment');
 			//dol_syslog("Failed to send EMail to ".$sendto, LOG_ERR, 0);
 		}
 	}
-}
-else
-{
+} else {
     // Get on url call
 	$onlinetoken = empty($PAYPALTOKEN) ? $_SESSION['onlinetoken'] : $PAYPALTOKEN;
     $payerID            = empty($PAYPALPAYERID) ? $_SESSION['payerID'] : $PAYPALPAYERID;
@@ -882,10 +833,12 @@ else
     $currencyCodeType   = $_SESSION['currencyCodeType'];
     $FinalPaymentAmt    = $_SESSION["FinalPaymentAmt"];
 
-    // Call trigger
-    $result = $object->call_trigger('PAYMENTONLINE_PAYMENT_KO', $user);
-    if ($result < 0) $error++;
-    // End call triggers
+    if (is_object($object) && method_exists($object, 'call_trigger')) {
+    	// Call trigger
+	    $result = $object->call_trigger('PAYMENTONLINE_PAYMENT_KO', $user);
+	    if ($result < 0) $error++;
+	    // End call triggers
+    }
 
     print $langs->trans('DoExpressCheckoutPaymentAPICallFailed')."<br>\n";
     print $langs->trans('DetailedErrorMessage').": ".$ErrorLongMsg."<br>\n";
@@ -924,10 +877,8 @@ else
             if (preg_match('/\d\.\d/', $appli))
             {
                 if (!preg_match('/'.preg_quote(DOL_VERSION).'/', $appli)) $appli .= " (".DOL_VERSION.")"; // If new title contains a version that is different than core
-            }
-            else $appli .= " ".DOL_VERSION;
-        }
-        else $appli .= " ".DOL_VERSION;
+            } else $appli .= " ".DOL_VERSION;
+        } else $appli .= " ".DOL_VERSION;
 
         $urlback = $_SERVER["REQUEST_URI"];
         $topic = '['.$appli.'] '.$companylangs->transnoentitiesnoconv("ValidationOfPaymentFailed");
@@ -951,9 +902,7 @@ else
         if ($result)
         {
             dol_syslog("EMail sent to ".$sendto, LOG_DEBUG, 0, '_payment');
-        }
-        else
-        {
+        } else {
             dol_syslog("Failed to send EMail to ".$sendto, LOG_ERR, 0, '_payment');
         }
     }

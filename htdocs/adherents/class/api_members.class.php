@@ -86,13 +86,14 @@ class Members extends DolibarrApi
      * @param int       $limit      Limit for list
      * @param int       $page       Page number
      * @param string    $typeid     ID of the type of member
+	 * @param  int    $category   Use this param to filter list by category
      * @param string    $sqlfilters Other criteria to filter answers separated by a comma.
      *                              Example: "(t.ref:like:'SO-%') and ((t.date_creation:<:'20160101') or (t.nature:is:NULL))"
      * @return array                Array of member objects
      *
      * @throws RestException
      */
-    public function index($sortfield = "t.rowid", $sortorder = 'ASC', $limit = 100, $page = 0, $typeid = '', $sqlfilters = '')
+    public function index($sortfield = "t.rowid", $sortorder = 'ASC', $limit = 100, $page = 0, $typeid = '', $category = 0, $sqlfilters = '')
     {
         global $db, $conf;
 
@@ -104,16 +105,21 @@ class Members extends DolibarrApi
 
         $sql = "SELECT t.rowid";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent as t";
+    	if ($category > 0) {
+			$sql .= ", ".MAIN_DB_PREFIX."categorie_member as c";
+    	}
         $sql .= ' WHERE t.entity IN ('.getEntity('adherent').')';
-        if (!empty($typeid))
-        {
+        if (!empty($typeid)) {
             $sql .= ' AND t.fk_adherent_type='.$typeid;
         }
+    	// Select members of given category
+    	if ($category > 0) {
+			$sql .= " AND c.fk_categorie = ".$db->escape($category);
+			$sql .= " AND c.fk_member = t.rowid ";
+    	}
         // Add sql filters
-        if ($sqlfilters)
-        {
-            if (!DolibarrApi::_checkFilters($sqlfilters))
-            {
+        if ($sqlfilters) {
+            if (!DolibarrApi::_checkFilters($sqlfilters)) {
                 throw new RestException(503, 'Error when validating parameter sqlfilters '.$sqlfilters);
             }
 	        $regexstring = '\(([^:\'\(\)]+:[^:\'\(\)]+:[^:\(\)]+)\)';
@@ -122,8 +128,7 @@ class Members extends DolibarrApi
 
         $sql .= $db->order($sortfield, $sortorder);
         if ($limit) {
-            if ($page < 0)
-            {
+            if ($page < 0) {
                 $page = 0;
             }
             $offset = $limit * $page;
@@ -132,13 +137,11 @@ class Members extends DolibarrApi
         }
 
         $result = $db->query($sql);
-        if ($result)
-        {
+        if ($result) {
             $i = 0;
             $num = $db->num_rows($result);
             $min = min($num, ($limit <= 0 ? $num : $limit));
-            while ($i < $min)
-            {
+            while ($i < $min) {
             	$obj = $db->fetch_object($result);
                 $member = new Adherent($this->db);
                 if ($member->fetch($obj->rowid)) {
@@ -146,8 +149,7 @@ class Members extends DolibarrApi
                 }
                 $i++;
             }
-        }
-        else {
+        } else {
             throw new RestException(503, 'Error when retrieve member list : '.$db->lasterror());
         }
         if (!count($obj_ret)) {
@@ -227,13 +229,10 @@ class Members extends DolibarrApi
 
         // If there is no error, update() returns the number of affected rows
         // so if the update is a no op, the return value is zero.
-        if ($member->update(DolibarrApiAccess::$user) >= 0)
-        {
+        if ($member->update(DolibarrApiAccess::$user) >= 0) {
             return $this->get($id);
-        }
-        else
-        {
-        	throw new RestException(500, $member->error);
+        } else {
+            throw new RestException(500, $member->error);
         }
     }
 

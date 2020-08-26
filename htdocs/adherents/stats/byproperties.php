@@ -33,8 +33,7 @@ $mode = GETPOST('mode') ?GETPOST('mode') : '';
 
 
 // Security check
-if ($user->socid > 0)
-{
+if ($user->socid > 0) {
     $action = '';
     $socid = $user->socid;
 }
@@ -58,7 +57,7 @@ llxHeader('', $langs->trans("MembersStatisticsByProperties"), '', '', 0, 0, arra
 
 $title = $langs->trans("MembersStatisticsByProperties");
 
-print load_fiche_titre($title, '');
+print load_fiche_titre($title, '', 'object_group');
 
 dol_mkdir($dir);
 
@@ -77,12 +76,10 @@ $foundphy = $foundmor = 0;
 // Define $data array
 dol_syslog("Count member", LOG_DEBUG);
 $resql = $db->query($sql);
-if ($resql)
-{
+if ($resql) {
 	$num = $db->num_rows($resql);
 	$i = 0;
-	while ($i < $num)
-	{
+	while ($i < $num) {
 		$obj = $db->fetch_object($resql);
 
 		if ($obj->code == 'phy') $foundphy++;
@@ -93,9 +90,7 @@ if ($resql)
 		$i++;
 	}
 	$db->free($resql);
-}
-else
-{
+} else {
 	dol_print_error($db);
 }
 
@@ -106,14 +101,12 @@ dol_fiche_head($head, 'statsbyproperties', $langs->trans("Statistics"), -1, 'use
 
 
 // Print title
-if (!count($data))
-{
+if (!count($data)) {
 	print $langs->trans("NoValidatedMemberYet").'<br>';
 	print '<br>';
-}
-else
-{
-	print load_fiche_titre($langs->trans("MembersByNature"), '', '');
+} else {
+	print $langs->trans("MembersByNature").'<br>';
+	print '<br>';
 }
 
 // Print array
@@ -128,8 +121,7 @@ print '</tr>';
 if (!$foundphy) $data[] = array('label'=>'phy', 'nb'=>'0', 'lastdate'=>'', 'lastsubscriptiondate'=>'');
 if (!$foundmor) $data[] = array('label'=>'mor', 'nb'=>'0', 'lastdate'=>'', 'lastsubscriptiondate'=>'');
 
-foreach ($data as $val)
-{
+foreach ($data as $val) {
 	print '<tr class="oddeven">';
 	print '<td>'.$memberstatic->getmorphylib($val['label']).'</td>';
 	print '<td class="right">'.$val['nb'].'</td>';

@@ -50,7 +50,7 @@ $warehouse = new Entrepot($db);
 $help_url = 'EN:Module_Stocks_En|FR:Module_Stock|ES:M&oacute;dulo_Stocks';
 llxHeader("", $langs->trans("Stocks"), $help_url);
 
-print load_fiche_titre($langs->trans("StocksArea"));
+print load_fiche_titre($langs->trans("StocksArea"), '', 'stock');
 
 
 //print '<table border="0" width="100%" class="notopnoleftnoright">';
@@ -121,9 +121,7 @@ if ($result)
 
     print "</table>";
     print '</div>';
-}
-else
-{
+} else {
     dol_print_error($db);
 }
 

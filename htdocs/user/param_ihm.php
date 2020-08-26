@@ -261,21 +261,8 @@ if ($action == 'edit')
 
     clearstatcache();
 
-    print '<table class="noborder centpercent">';
-    print '<tr class="liste_titre"><td width="25%">'.$langs->trans("Parameter").'</td><td width="25%">'.$langs->trans("DefaultValue").'</td><td>&nbsp;</td><td>'.$langs->trans("PersonalValue").'</td></tr>';
-
-    // Landing page
-    print '<tr class="oddeven"><td>'.$langs->trans("LandingPage").'</td>';
-    print '<td>';
-    print (empty($conf->global->MAIN_LANDING_PAGE) ? '' : $conf->global->MAIN_LANDING_PAGE);
-    print '</td>';
-    print '<td class="nowrap" width="20%"><input class="oddeven" name="check_MAIN_LANDING_PAGE" id="check_MAIN_LANDING_PAGE" type="checkbox" '.(!empty($object->conf->MAIN_LANDING_PAGE) ? " checked" : "");
-    print empty($dolibarr_main_demo) ? '' : ' disabled="disabled"'; // Disabled for demo
-    print '> '.$langs->trans("UsePersonalValue").'</td>';
-    print '<td>';
-    print $form->selectarray('MAIN_LANDING_PAGE', $tmparray, (!empty($object->conf->MAIN_LANDING_PAGE) ? $object->conf->MAIN_LANDING_PAGE : ''), 0, 0, 0, '', 1);
-    //print info_admin($langs->trans("WarningYouMayLooseAccess"), 0, 0, 0);
-    print '</td></tr>';
+    print '<table class="noborder centpercent tableforfield">';
+    print '<tr class="liste_titre"><td>'.$langs->trans("Parameter").'</td><td>'.$langs->trans("DefaultValue").'</td><td>&nbsp;</td><td>'.$langs->trans("PersonalValue").'</td></tr>';
 
     // Language by default
     print '<tr class="oddeven"><td>'.$langs->trans("Language").'</td>';
@@ -286,30 +273,43 @@ if ($action == 'edit')
     print '</td>';
     print '<td class="nowrap" width="20%"><input class="oddeven" name="check_MAIN_LANG_DEFAULT" id="check_MAIN_LANG_DEFAULT" type="checkbox" '.(!empty($object->conf->MAIN_LANG_DEFAULT) ? " checked" : "");
     print empty($dolibarr_main_demo) ? '' : ' disabled="disabled"'; // Disabled for demo
-    print '> '.$langs->trans("UsePersonalValue").'</td>';
+    print '> <label for="check_MAIN_LANG_DEFAULT">'.$langs->trans("UsePersonalValue").'</label></td>';
     print '<td>';
     print $formadmin->select_language((!empty($object->conf->MAIN_LANG_DEFAULT) ? $object->conf->MAIN_LANG_DEFAULT : ''), 'main_lang_default', 1, null, 0, 0, (!empty($dolibarr_main_demo)));
     print '</td></tr>';
+
+    // Landing page
+    print '<tr class="oddeven"><td>'.$langs->trans("LandingPage").'</td>';
+    print '<td>';
+    print (empty($conf->global->MAIN_LANDING_PAGE) ? '' : $conf->global->MAIN_LANDING_PAGE);
+    print '</td>';
+    print '<td class="nowrap" width="20%"><input class="oddeven" name="check_MAIN_LANDING_PAGE" id="check_MAIN_LANDING_PAGE" type="checkbox" '.(!empty($object->conf->MAIN_LANDING_PAGE) ? " checked" : "");
+    print empty($dolibarr_main_demo) ? '' : ' disabled="disabled"'; // Disabled for demo
+    print '> <label for="check_MAIN_LANDING_PAGE">'.$langs->trans("UsePersonalValue").'</label></td>';
+    print '<td>';
+    print $form->selectarray('MAIN_LANDING_PAGE', $tmparray, (!empty($object->conf->MAIN_LANDING_PAGE) ? $object->conf->MAIN_LANDING_PAGE : ''), 0, 0, 0, '', 1);
+    //print info_admin($langs->trans("WarningYouMayLooseAccess"), 0, 0, 0);
+    print '</td></tr>';
+
+    // Landing page for Agenda - AGENDA_DEFAULT_VIEW
+    print '<tr class="oddeven">'."\n";
+    print '<td>'.$langs->trans("AGENDA_DEFAULT_VIEW").'</td>'."\n";
+    print '<td class="center">&nbsp;</td>'."\n";
+    print '<td class="nowrap" width="20%"><input class="oddeven" name="check_AGENDA_DEFAULT_VIEW" id="check_AGENDA_DEFAULT_VIEW" type="checkbox" '.(!empty($object->conf->AGENDA_DEFAULT_VIEW) ? " checked" : "");
+    print empty($dolibarr_main_demo) ? '' : ' disabled="disabled"'; // Disabled for demo
+    print '> <label for="check_AGENDA_DEFAULT_VIEW">'.$langs->trans("UsePersonalValue").'</label></td>';
+    print '<td>'."\n";
+    $tmplist = array(''=>'&nbsp;', 'show_list'=>$langs->trans("ViewList"), 'show_month'=>$langs->trans("ViewCal"), 'show_week'=>$langs->trans("ViewWeek"), 'show_day'=>$langs->trans("ViewDay"), 'show_peruser'=>$langs->trans("ViewPerUser"));
+    print $form->selectarray('AGENDA_DEFAULT_VIEW', $tmplist, $object->conf->AGENDA_DEFAULT_VIEW, 0, 0, 0, '');
+    print '</td></tr>'."\n";
 
     // Max size of lists
     print '<tr class="oddeven"><td>'.$langs->trans("MaxSizeList").'</td>';
     print '<td>'.$conf->global->MAIN_SIZE_LISTE_LIMIT.'</td>';
     print '<td class="nowrap" width="20%"><input class="oddeven" name="check_SIZE_LISTE_LIMIT" id="check_SIZE_LISTE_LIMIT" type="checkbox" '.(!empty($object->conf->MAIN_SIZE_LISTE_LIMIT) ? " checked" : "");
     print empty($dolibarr_main_demo) ? '' : ' disabled="disabled"'; // Disabled for demo
-    print '> '.$langs->trans("UsePersonalValue").'</td>';
+    print '> <label for="check_SIZE_LISTE_LIMIT">'.$langs->trans("UsePersonalValue").'</label></td>';
     print '<td><input class="flat" name="main_size_liste_limit" id="main_size_liste_limit" size="4" value="'.(!empty($object->conf->MAIN_SIZE_LISTE_LIMIT) ? $object->conf->MAIN_SIZE_LISTE_LIMIT : '').'"></td></tr>';
-
-    // AGENDA_DEFAULT_VIEW
-    print '<tr class="oddeven">'."\n";
-    print '<td>'.$langs->trans("AGENDA_DEFAULT_VIEW").'</td>'."\n";
-    print '<td class="center">&nbsp;</td>'."\n";
-    print '<td class="nowrap" width="20%"><input class="oddeven" name="check_AGENDA_DEFAULT_VIEW" id="check_AGENDA_DEFAULT_VIEW" type="checkbox" '.(!empty($object->conf->AGENDA_DEFAULT_VIEW) ? " checked" : "");
-    print empty($dolibarr_main_demo) ? '' : ' disabled="disabled"'; // Disabled for demo
-    print '> '.$langs->trans("UsePersonalValue").'</td>';
-    print '<td>'."\n";
-    $tmplist = array(''=>'&nbsp;', 'show_list'=>$langs->trans("ViewList"), 'show_month'=>$langs->trans("ViewCal"), 'show_week'=>$langs->trans("ViewWeek"), 'show_day'=>$langs->trans("ViewDay"), 'show_peruser'=>$langs->trans("ViewPerUser"));
-    print $form->selectarray('AGENDA_DEFAULT_VIEW', $tmplist, $object->conf->AGENDA_DEFAULT_VIEW, 0, 0, 0, '');
-    print '</td></tr>'."\n";
 
     print '</table><br>';
 
@@ -324,34 +324,15 @@ if ($action == 'edit')
     print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
     print '</div>';
-}
-else
-{
+} else {
     dol_fiche_head($head, 'guisetup', $title, -1, 'user');
 
     $linkback = '<a href="'.DOL_URL_ROOT.'/user/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
     dol_banner_tab($object, 'id', $linkback, $user->rights->user->user->lire || $user->admin);
 
-    print '<table class="noborder centpercent">';
-    print '<tr class="liste_titre"><td width="25%">'.$langs->trans("Parameter").'</td><td width="25%">'.$langs->trans("DefaultValue").'</td><td>&nbsp;</td><td>'.$langs->trans("PersonalValue").'</td></tr>';
-
-    // Landing page
-    print '<tr class="oddeven"><td>'.$langs->trans("LandingPage").'</td>';
-    print '<td>';
-    print (empty($conf->global->MAIN_LANDING_PAGE) ? '' : $conf->global->MAIN_LANDING_PAGE);
-    print '</td>';
-    print '<td class="nowrap"><input class="oddeven" name="check_MAIN_LANDING_PAGE" disabled id="check_MAIN_LANDING_PAGE" type="checkbox" '.(!empty($object->conf->MAIN_LANDING_PAGE) ? " checked" : "");
-    print empty($dolibarr_main_demo) ? '' : ' disabled="disabled"'; // Disabled for demo
-    print '> '.$langs->trans("UsePersonalValue").'</td>';
-    print '<td>';
-    if (!empty($tmparray[$object->conf->MAIN_LANDING_PAGE]))
-    {
-        print $langs->trans($tmparray[$object->conf->MAIN_LANDING_PAGE]);
-    }
-    else print $object->conf->MAIN_LANDING_PAGE;
-    //print $form->selectarray('MAIN_LANDING_PAGE', $tmparray, (! empty($object->conf->MAIN_LANDING_PAGE)?$object->conf->MAIN_LANDING_PAGE:''), 0, 0, 0, '', 1);
-    print '</td></tr>';
+    print '<table class="noborder centpercent tableforfield">';
+    print '<tr class="liste_titre"><td>'.$langs->trans("Parameter").'</td><td>'.$langs->trans("DefaultValue").'</td><td>&nbsp;</td><td>'.$langs->trans("PersonalValue").'</td></tr>';
 
     // Language
     print '<tr class="oddeven"><td>'.$langs->trans("Language").'</td>';
@@ -367,13 +348,23 @@ else
     print (isset($object->conf->MAIN_LANG_DEFAULT) && $object->conf->MAIN_LANG_DEFAULT == 'auto' ? $langs->trans("AutoDetectLang") : (!empty($object->conf->MAIN_LANG_DEFAULT) ? $langs->trans("Language_".$object->conf->MAIN_LANG_DEFAULT) : ''));
     print '</td></tr>';
 
-	// Max size for lists
-    print '<tr class="oddeven"><td>'.$langs->trans("MaxSizeList").'</td>';
-    print '<td>'.(!empty($conf->global->MAIN_SIZE_LISTE_LIMIT) ? $conf->global->MAIN_SIZE_LISTE_LIMIT : '&nbsp;').'</td>';
-    print '<td class="nowrap" width="20%"><input class="oddeven" type="checkbox" disabled '.(!empty($object->conf->MAIN_SIZE_LISTE_LIMIT) ? " checked" : "").'> '.$langs->trans("UsePersonalValue").'</td>';
-    print '<td>'.(!empty($object->conf->MAIN_SIZE_LISTE_LIMIT) ? $object->conf->MAIN_SIZE_LISTE_LIMIT : '&nbsp;').'</td></tr>';
+    // Landing page
+    print '<tr class="oddeven"><td>'.$langs->trans("LandingPage").'</td>';
+    print '<td>';
+    print (empty($conf->global->MAIN_LANDING_PAGE) ? '' : $conf->global->MAIN_LANDING_PAGE);
+    print '</td>';
+    print '<td class="nowrap"><input class="oddeven" name="check_MAIN_LANDING_PAGE" disabled id="check_MAIN_LANDING_PAGE" type="checkbox" '.(!empty($object->conf->MAIN_LANDING_PAGE) ? " checked" : "");
+    print empty($dolibarr_main_demo) ? '' : ' disabled="disabled"'; // Disabled for demo
+    print '> '.$langs->trans("UsePersonalValue").'</td>';
+    print '<td>';
+    if (!empty($tmparray[$object->conf->MAIN_LANDING_PAGE]))
+    {
+        print $langs->trans($tmparray[$object->conf->MAIN_LANDING_PAGE]);
+    } else print $object->conf->MAIN_LANDING_PAGE;
+    //print $form->selectarray('MAIN_LANDING_PAGE', $tmparray, (! empty($object->conf->MAIN_LANDING_PAGE)?$object->conf->MAIN_LANDING_PAGE:''), 0, 0, 0, '', 1);
+    print '</td></tr>';
 
-    // AGENDA_DEFAULT_VIEW
+    // Landing page for Agenda - AGENDA_DEFAULT_VIEW
     print '<tr class="oddeven">'."\n";
     print '<td>'.$langs->trans("AGENDA_DEFAULT_VIEW").'</td>'."\n";
     print '<td class="center">&nbsp;</td>'."\n";
@@ -382,6 +373,12 @@ else
     $tmplist = array(''=>'&nbsp;', 'show_list'=>$langs->trans("ViewList"), 'show_month'=>$langs->trans("ViewCal"), 'show_week'=>$langs->trans("ViewWeek"), 'show_day'=>$langs->trans("ViewDay"), 'show_peruser'=>$langs->trans("ViewPerUser"));
     if (!empty($object->conf->AGENDA_DEFAULT_VIEW)) print $form->selectarray('AGENDA_DEFAULT_VIEW', $tmplist, $object->conf->AGENDA_DEFAULT_VIEW, 0, 0, 0, '', 0, 0, 1);
     print '</td></tr>'."\n";
+
+    // Max size for lists
+    print '<tr class="oddeven"><td>'.$langs->trans("MaxSizeList").'</td>';
+    print '<td>'.(!empty($conf->global->MAIN_SIZE_LISTE_LIMIT) ? $conf->global->MAIN_SIZE_LISTE_LIMIT : '&nbsp;').'</td>';
+    print '<td class="nowrap" width="20%"><input class="oddeven" type="checkbox" disabled '.(!empty($object->conf->MAIN_SIZE_LISTE_LIMIT) ? " checked" : "").'> '.$langs->trans("UsePersonalValue").'</td>';
+    print '<td>'.(!empty($object->conf->MAIN_SIZE_LISTE_LIMIT) ? $object->conf->MAIN_SIZE_LISTE_LIMIT : '&nbsp;').'</td></tr>';
 
     print '</table><br>';
 
@@ -396,15 +393,11 @@ else
     if (empty($user->admin) && !empty($dolibarr_main_demo))
     {
         print "<a class=\"butActionRefused classfortooltip\" title=\"".$langs->trans("FeatureDisabledInDemo")."\" href=\"#\">".$langs->trans("Modify")."</a>";
-    }
-    else
-    {
+    } else {
         if ($caneditfield || !empty($user->admin))       // Si utilisateur edite = utilisateur courant (pas besoin de droits particulier car il s'agit d'une page de modif d'output et non de données) ou si admin
         {
             print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit&amp;id='.$object->id.'">'.$langs->trans("Modify").'</a>';
-        }
-        else
-        {
+        } else {
             print "<a class=\"butActionRefused classfortooltip\" title=\"".$langs->trans("NotEnoughPermissions")."\" href=\"#\">".$langs->trans("Modify")."</a>";
         }
     }

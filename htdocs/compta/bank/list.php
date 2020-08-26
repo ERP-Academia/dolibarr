@@ -212,8 +212,7 @@ if ($resql)
         $i++;
     }
     $db->free($resql);
-}
-else dol_print_error($db);
+} else dol_print_error($db);
 
 
 
@@ -264,7 +263,7 @@ print '<input type="hidden" name="action" value="list">';
 print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
 print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 print '<input type="hidden" name="page" value="'.$page.'">';
-print '<input type="hidden" name="viewstatut" value="'.$viewstatut.'">';
+print '<input type="hidden" name="search_status" value="'.$search_status.'">';
 
 print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, '', $num, $nbtotalofrecords, 'bank_account', 0, $newcardbutton, '', $limit, 1);
 
@@ -487,9 +486,7 @@ foreach ($accounts as $key=>$type)
     		$accountingaccount = new AccountingAccount($db);
     		$accountingaccount->fetch('', $objecttmp->account_number, 1);
     		print $accountingaccount->getNomUrl(0, 1, 1, '', 1);
-    	}
-    	else
-    	{
+    	} else {
     		print $objecttmp->account_number;
     	}
     	print '</td>';
@@ -505,9 +502,7 @@ foreach ($accounts as $key=>$type)
     		$accountingjournal = new AccountingJournal($db);
     		$accountingjournal->fetch($objecttmp->fk_accountancy_journal);
     		print $accountingjournal->getNomUrl(0, 1, 1, '', 1);
-    	}
-    	else
-    	{
+    	} else {
     		print '';
     	}
     	print '</td>';
@@ -538,7 +533,11 @@ foreach ($accounts as $key=>$type)
     		if ($result < 0) {
     			setEventMessages($objecttmp->error, $objecttmp->errors, 'errors');
     		} else {
-    			print '<span class="badge badge-info classfortooltip" title="'.dol_htmlentities($langs->trans("TransactionsToConciliate")).'">'.$result->nbtodo.'</span>';
+    			print '<a href="'.DOL_URL_ROOT.'/compta/bank/bankentries_list.php?id='.$objecttmp->id.'&search_conciliated=0">';
+    			print '<span class="badge badge-info classfortooltip" title="'.dol_htmlentities($langs->trans("TransactionsToConciliate")).'">';
+    			print $result->nbtodo;
+    			print '</span>';
+				print '</a>';
     			if ($result->nbtodolate) {
     				print '<span title="'.dol_htmlentities($langs->trans("Late")).'" class="classfortooltip badge badge-danger marginleftonlyshort">';
     				print '<i class="fa fa-exclamation-triangle"></i> '.$result->nbtodolate;
@@ -552,9 +551,15 @@ foreach ($accounts as $key=>$type)
     }
 
     // Extra fields
+	if (is_array($objecttmp->array_options)) {
+		$obj = new stdClass();
+		foreach ($objecttmp->array_options as $k => $v) {
+			$obj->$k = $v;
+		}
+	}
     include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
     // Fields from hook
-    $parameters = array('arrayfields'=>$arrayfields);
+    $parameters = array('arrayfields'=>$arrayfields, 'obj'=>$obj, 'i'=>$i, 'totalarray'=>&$totalarray);
     $reshook = $hookmanager->executeHooks('printFieldListValue', $parameters, $objecttmp); // Note that $action and $objecttmpect may have been modified by hook
     print $hookmanager->resPrint;
 	// Date creation

@@ -131,9 +131,7 @@ if ($action == 'add' && $_POST["cancel"] <> $langs->trans("Cancel"))
 			$db->commit();
 			header("Location: list.php");
 			exit;
-		}
-		else
-		{
+		} else {
 			$db->rollback();
 			setEventMessages($object->error, $object->errors, 'errors');
 			$action = "create";
@@ -166,22 +164,16 @@ if ($action == 'delete')
 				$db->commit();
 				header("Location: ".DOL_URL_ROOT.'/compta/tva/list.php');
 				exit;
-			}
-			else
-			{
+			} else {
 				$object->error = $accountline->error;
 				$db->rollback();
 				setEventMessages($object->error, $object->errors, 'errors');
 			}
-	    }
-	    else
-	    {
+	    } else {
 	        $db->rollback();
 	        setEventMessages($object->error, $object->errors, 'errors');
 	    }
-	}
-	else
-	{
+	} else {
 		$mesg = 'Error try do delete a line linked to a conciliated bank transaction';
 		setEventMessages($mesg, null, 'errors');
 	}
@@ -209,7 +201,7 @@ if ($id)
 	}
 }
 
-// Formulaire saisie tva
+// Form to enter VAT
 if ($action == 'create')
 {
 	print load_fiche_titre($langs->trans("VAT").' - '.$langs->trans("New"));
@@ -262,7 +254,7 @@ if ($action == 'create')
     print '</td></tr>';
 
     print '<tr><td class="fieldrequired">'.$form->textwithpicto($langs->trans("PeriodEndDate"), $langs->trans("LastDayTaxIsRelatedTo")).'</td><td>';
-    print $form->selectDate($datev, "datev", '', '', '', 'add', 1, 1);
+    print $form->selectDate((GETPOST("datevmonth", 'int') ? $datev : -1), "datev", '', '', '', 'add', 1, 1);
     print '</td></tr>';
 
 	// Label
@@ -388,14 +380,10 @@ if ($id)
 		if (!empty($user->rights->tax->charges->supprimer))
 		{
 			print '<div class="inline-block divButAction"><a class="butActionDelete" href="card.php?id='.$object->id.'&action=delete">'.$langs->trans("Delete").'</a></div>';
-		}
-		else
-		{
+		} else {
 			print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.(dol_escape_htmltag($langs->trans("NotAllowed"))).'">'.$langs->trans("Delete").'</a></div>';
 		}
-	}
-	else
-	{
+	} else {
 		print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("LinkedToAConciliatedTransaction").'">'.$langs->trans("Delete").'</a></div>';
 	}
 	print "</div>";

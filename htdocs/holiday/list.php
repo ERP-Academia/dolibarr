@@ -1,9 +1,9 @@
 <?php
 /* Copyright (C) 2011	   Dimitri Mouillard	<dmouillard@teclib.com>
- * Copyright (C) 2013-2018 Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2013-2020 Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2016 Regis Houssin	<regis.houssin@inodbox.com>
  * Copyright (C) 2018      Charlene Benke	<charlie@patas-monkey.com>
- * Copyright (C) 2019		Frédéric France		<frederic.france@netlogic.fr>
+ * Copyright (C) 2019	   Frédéric France		<frederic.france@netlogic.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -391,7 +391,6 @@ if ($resql)
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 	print '<input type="hidden" name="action" value="'.($action == 'edit' ? 'update' : 'list').'">';
-	print '<input type="hidden" name="page" value="'.$page.'">';
 	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 	print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
 	print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
@@ -430,9 +429,7 @@ if ($resql)
 		}
 
 		print '</div>';
-	}
-	else
-	{
+	} else {
 		$title = $langs->trans("ListeCP");
 
 		$newcardbutton = '';
@@ -441,7 +438,7 @@ if ($resql)
 			$newcardbutton .= dolGetButtonTitle($langs->trans('MenuAddCP'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/holiday/card.php?action=request');
 	    }
 
-		print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'title_hrm', 0, $newcardbutton, '', $limit);
+		print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'title_hrm', 0, $newcardbutton, '', $limit, 0, 0, 1);
 	}
 
 	$topicmail = "Information";
@@ -476,7 +473,7 @@ if ($resql)
 
 
 	$include = '';
-	if (!empty($user->rights->holiday->read_all)) $include = 'hierarchyme'; // Can see all
+	if (empty($user->rights->holiday->read_all)) $include = 'hierarchyme'; // Can see only its hierarchyl
 
 	print '<div class="div-table-responsive">';
 	print '<table class="tagtable liste'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
@@ -488,7 +485,7 @@ if ($resql)
 	if (!empty($arrayfields['cp.ref']['checked']))
 	{
 		print '<td class="liste_titre">';
-		print '<input class="flat" size="4" type="text" name="search_ref" value="'.dol_escape_htmltag($search_ref).'">';
+		print '<input class="flat maxwidth50" type="text" name="search_ref" value="'.dol_escape_htmltag($search_ref).'">';
 		print '</td>';
 	}
 
@@ -524,9 +521,7 @@ if ($resql)
 		    foreach ($valideurobjects as $val) $valideurarray[$val->id] = $val->id;
 		    print $form->select_dolusers($search_valideur, "search_valideur", 1, "", 0, $valideurarray, '', 0, 0, 0, $morefilter, 0, '', 'maxwidth200');
 		    print '</td>';
-		}
-		else
-		{
+		} else {
 		    print '<td class="liste_titre">&nbsp;</td>';
 		}
 	}
@@ -644,8 +639,7 @@ if ($resql)
 		$langs->load("errors");
 		print '<tr class="oddeven opacitymediuem"><td colspan="10">'.$langs->trans("NotEnoughPermissions").'</td></tr>';
 		$result = 0;
-	}
-	elseif ($num > 0 && !empty($mysoc->country_id))
+	} elseif ($num > 0 && !empty($mysoc->country_id))
 	{
 	    // Lines
 	    $userstatic = new User($db);
@@ -744,7 +738,7 @@ if ($resql)
 			// Extra fields
 			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
 			// Fields from hook
-			$parameters = array('arrayfields'=>$arrayfields, 'obj'=>$obj);
+			$parameters = array('arrayfields'=>$arrayfields, 'obj'=>$obj, 'i'=>$i, 'totalarray'=>&$totalarray);
 			$reshook = $hookmanager->executeHooks('printFieldListValue', $parameters); // Note that $action and $object may have been modified by hook
 			print $hookmanager->resPrint;
 
@@ -794,9 +788,7 @@ if ($resql)
 	print '</div>';
 
 	print '</form>';
-}
-else
-{
+} else {
 	dol_print_error($db);
 }
 

@@ -109,7 +109,7 @@ $hookmanager->initHooks(array('expensereportlist'));
 $extrafields = new ExtraFields($db);
 
 // fetch optionals attributes and labels
-$extrafields->fetch_name_optionals_label('expensereport');
+$extrafields->fetch_name_optionals_label($object->table_element);
 
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
@@ -226,9 +226,7 @@ if (empty($reshook))
     					if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
     						$langs->load("errors");
     						setEventMessages($langs->trans("ErrorLoginAlreadyExists", $objectuser->login), null, 'errors');
-    					}
-    					else
-    					{
+    					} else {
     						setEventMessages($objectuser->error, $objectuser->errors, 'errors');
     					}
     				}
@@ -237,8 +235,7 @@ if (empty($reshook))
     			if (!$error && !count($objectuser->errors)) {
     				setEventMessages($langs->trans("UserModified"), null, 'mesgs');
     				$db->commit();
-    			}
-    			else {
+    			} else {
     				$db->rollback();
     			}
     		}
@@ -373,7 +370,6 @@ if ($resql)
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 	print '<input type="hidden" name="action" value="'.($action == 'edit' ? 'update' : 'list').'">';
-    print '<input type="hidden" name="page" value="'.$page.'">';
 	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
     print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
 	print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
@@ -408,9 +404,7 @@ if ($resql)
 				$maxRangeNum = ExpenseReportIk::getMaxRangeNumber($fuser->default_c_exp_tax_cat);
 				print $form->selectarray('default_range', range(0, $maxRangeNum), $fuser->default_range);
 				print '</td></tr>';
-			}
-			else
-			{
+			} else {
 				print '<tr><td class="titlefield">'.$langs->trans("DefaultCategoryCar").'</td>';
 				print '<td class="fk_c_exp_tax_cat">';
 				print dol_getIdFromCode($db, $fuser->default_c_exp_tax_cat, 'c_exp_tax_cat', 'rowid', 'label');
@@ -459,16 +453,12 @@ if ($resql)
 			}
 
 			print '</div>';
-		}
-		else
-		{
+		} else {
 			print '<div class="center">';
 			print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
 			print '</div><br>';
 		}
-	}
-	else
-	{
+	} else {
 		$title = $langs->trans("ListTripsAndExpenses");
 
 		$newcardbutton = '';
@@ -477,7 +467,7 @@ if ($resql)
             $newcardbutton .= dolGetButtonTitle($langs->trans('NewTrip'), '', 'fa fa-plus-circle', DOL_URL_ROOT.'/expensereport/card.php?action=create');
 		}
 
-		print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'trip', 0, $newcardbutton, '', $limit);
+		print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'trip', 0, $newcardbutton, '', $limit, 0, 0, 1);
 	}
 
 	$topicmail = "SendExpenseReport";
@@ -761,7 +751,7 @@ if ($resql)
             // Extra fields
             include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
             // Fields from hook
-            $parameters = array('arrayfields'=>$arrayfields, 'obj'=>$obj);
+            $parameters = array('arrayfields'=>$arrayfields, 'obj'=>$obj, 'i'=>$i, 'totalarray'=>&$totalarray);
             $reshook = $hookmanager->executeHooks('printFieldListValue', $parameters); // Note that $action and $object may have been modified by hook
             print $hookmanager->resPrint;
 
@@ -806,9 +796,7 @@ if ($resql)
 
 			$i++;
 		}
-	}
-	else
-	{
+	} else {
 		$colspan = 1;
 		foreach ($arrayfields as $key => $val) { if (!empty($val['checked'])) $colspan++; }
 		print '<tr><td colspan="'.$colspan.'" class="opacitymedium">'.$langs->trans("NoRecordFound").'</td></tr>';
@@ -843,9 +831,7 @@ if ($resql)
 
 		print $formfile->showdocuments('massfilesarea_expensereport', '', $filedir, $urlsource, 0, $delallowed, '', 1, 1, 0, 48, 1, $param, $title, '', '', '', null, $hidegeneratedfilelistifempty);
 	}
-}
-else
-{
+} else {
 	dol_print_error($db);
 }
 

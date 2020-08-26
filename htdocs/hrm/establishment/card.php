@@ -63,23 +63,19 @@ if ($action == 'confirm_delete' && $confirm == "yes")
     {
         header("Location: ../admin/admin_establishment.php");
         exit;
-    }
-    else
-    {
+    } else {
         setEventMessages($object->error, $object->errors, 'errors');
     }
-}
-
-elseif ($action == 'add')
+} elseif ($action == 'add')
 {
     if (!$cancel)
     {
         $error = 0;
 
-		$object->name = GETPOST('name', 'alpha');
-        if (empty($object->name))
+		$object->label = GETPOST('label', 'alpha');
+        if (empty($object->label))
         {
-	        setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Name")), null, 'errors');
+	        setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Label")), null, 'errors');
             $error++;
         }
 
@@ -100,19 +96,13 @@ elseif ($action == 'add')
             {
                 header("Location: ".$_SERVER["PHP_SELF"]."?id=".$id);
                 exit;
-			}
-			else
-			{
+			} else {
 				setEventMessages($object->error, $object->errors, 'errors');
 			}
-        }
-        else
-        {
+        } else {
             $action = 'create';
         }
-    }
-    else
-    {
+    } else {
         header("Location: ../admin/admin_establishment.php");
         exit;
     }
@@ -124,15 +114,15 @@ elseif ($action == 'update')
 	$error = 0;
 
 	if (!$cancel) {
-		$name = GETPOST('name', 'alpha');
+		$name = GETPOST('label', 'alpha');
 		if (empty($name)) {
-			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Name')), null, 'errors');
+			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Label')), null, 'errors');
 			$error++;
 		}
 
 		if (empty($error))
 		{
-			$object->name = GETPOST('name', 'alpha');
+			$object->label = GETPOST('label', 'alphanohtml');
 			$object->address = GETPOST('address', 'alpha');
 			$object->zip 			= GETPOST('zipcode', 'alpha');
 			$object->town			= GETPOST('town', 'alpha');
@@ -147,9 +137,7 @@ elseif ($action == 'update')
             {
                 header("Location: ".$_SERVER["PHP_SELF"]."?id=".$_POST['id']);
                 exit;
-            }
-			else
-			{
+            } else {
 				setEventMessages($object->error, $object->errors, 'errors');
 			}
 		}
@@ -185,23 +173,26 @@ if ($action == 'create')
 
 	// Name
 	print '<tr>';
-	print '<td>'.$form->editfieldkey('Name', 'name', '', $object, 0, 'string', '', 1).'</td>';
-	print '<td><input name="name" id="name" size="32" value="'.GETPOST("name", "alpha").'"></td>';
+	print '<td>'.$form->editfieldkey('Label', 'label', '', $object, 0, 'string', '', 1).'</td>';
+	print '<td><input name="label" id="label" value="'.GETPOST("label", "alphanohtml").'"></td>';
 	print '</tr>';
 
-	// Parent
-	print '<tr>';
-	print '<td>'.$form->editfieldkey('Parent', 'entity', '', $object, 0, 'string', '', 1).'</td>';
-	print '<td class="maxwidthonsmartphone">';
-	print $form->selectEstablishments(GETPOST('entity', 'int') > 0 ?GETPOST('entity', 'int') : $conf->entity, 'entity', 1);
-	print '</td>';
-	print '</tr>';
+	// Entity
+	/*
+	if (! empty($conf->multicompany->enabled)) {
+		print '<tr>';
+		print '<td>'.$form->editfieldkey('Parent', 'entity', '', $object, 0, 'string', '', 1).'</td>';
+		print '<td class="maxwidthonsmartphone">';
+		print $form->selectEstablishments(GETPOST('entity', 'int') > 0 ?GETPOST('entity', 'int') : $conf->entity, 'entity', 1);
+		print '</td>';
+		print '</tr>';
+	} */
 
 	// Address
 	print '<tr>';
 	print '<td>'.$form->editfieldkey('Address', 'address', '', $object, 0).'</td>';
 	print '<td>';
-	print '<input name="address" id="address" class="qutrevingtpercent" value="'.GETPOST('address', 'alpha').'">';
+	print '<input name="address" id="address" class="qutrevingtpercent" value="'.GETPOST('address', 'alphanohtml').'">';
 	print '</td>';
 	print '</tr>';
 
@@ -282,25 +273,28 @@ if (($id || $ref) && $action == 'edit')
 
             // Ref
             print "<tr>";
-            print '<td width="25%">'.$langs->trans("Ref").'</td><td>';
+            print '<td class="titlefield">'.$langs->trans("Ref").'</td><td>';
             print $object->id;
             print '</td></tr>';
 
             // Name
-            print '<tr><td>'.$form->editfieldkey('Name', 'name', '', $object, 0, 'string', '', 1).'</td><td>';
-            print '<input name="name" id="name" class="flat" size="32" value="'.$object->name.'">';
+            print '<tr><td>'.$form->editfieldkey('Label', 'label', '', $object, 0, 'string', '', 1).'</td><td>';
+            print '<input name="label" id="label" class="flat" value="'.$object->label.'">';
             print '</td></tr>';
 
-			// Parent
-            print '<tr><td>'.$form->editfieldkey('Parent', 'entity', '', $object, 0, 'string', '', 1).'</td>';
-			print '<td class="maxwidthonsmartphone">';
-			print $form->selectEstablishments($object->entity > 0 ? $object->entity : $conf->entity, 'entity', 1);
-            print '</td></tr>';
+			// Entity
+			/*
+            if (! empty($conf->multicompany->enabled)) {
+	            print '<tr><td>'.$form->editfieldkey('Parent', 'entity', '', $object, 0, 'string', '', 1).'</td>';
+				print '<td class="maxwidthonsmartphone">';
+				print $object->entity > 0 ? $object->entity : $conf->entity;
+	            print '</td></tr>';
+            }*/
 
 			// Address
 			print '<tr><td>'.$form->editfieldkey('Address', 'address', '', $object, 0).'</td>';
 			print '<td>';
-			print '<input name="address" id="address" size="32" value="'.$object->address.'">';
+			print '<input name="address" id="address" value="'.$object->address.'">';
 			print '</td></tr>';
 
 			// Zipcode / Town
@@ -340,8 +334,7 @@ if (($id || $ref) && $action == 'edit')
 
             print '</form>';
         }
-    }
-    else dol_print_error($db);
+    } else dol_print_error($db);
 }
 
 if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
@@ -376,15 +369,18 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	// Name
 	print '<tr>';
-	print '<td class="titlefield">'.$langs->trans("Name").'</td>';
-	print '<td>'.$object->name.'</td>';
+	print '<td class="titlefield">'.$langs->trans("Label").'</td>';
+	print '<td>'.$object->label.'</td>';
 	print '</tr>';
 
-	// Parent
-	print '<tr>';
-	print '<td class="titlefield">'.$langs->trans("Parent").'</td>';
-	print '<td>'.$object->getNomUrlParent($object->entity).'</td>';
-	print '</tr>';
+	// Entity
+	/*
+	if ($conf->multicompany->enabled) {
+		print '<tr>';
+		print '<td class="titlefield">'.$langs->trans("Entity").'</td>';
+		print '<td>'.$object->entity.'</td>';
+		print '</tr>';
+	}*/
 
 	// Address
 	print '<tr>';
@@ -394,7 +390,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	// Zipcode
 	print '<tr>';
-	print '<td>'.$langs->trans("Zipcode").'</td>';
+	print '<td>'.$langs->trans("Zip").'</td>';
 	print '<td>'.$object->zip.'</td>';
 	print '</tr>';
 

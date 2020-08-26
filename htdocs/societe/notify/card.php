@@ -104,18 +104,14 @@ if (empty($reshook))
                     $error++;
                     dol_print_error($db);
                 }
-            }
-            else
-            {
+            } else {
                 dol_print_error($db);
             }
 
             if (!$error)
             {
                 $db->commit();
-            }
-            else
-            {
+            } else {
                 $db->rollback();
             }
         }
@@ -251,11 +247,11 @@ if ($result > 0)
  			$label = ($langs->trans("Notify_".$managedeventfornotification['code']) != "Notify_".$managedeventfornotification['code'] ? $langs->trans("Notify_".$managedeventfornotification['code']) : $managedeventfornotification['label']);
             $actions[$managedeventfornotification['rowid']] = $label;
         }
-        print '<tr class="oddeven"><td class="maxwidthonsmartphone">';
-        print $form->selectarray("contactid", $listofemails, '', 0, 0, 0, '', 0, 0, 0, '', 'maxwidthonsmartphone');
+        print '<tr class="oddeven nohover"><td class="maxwidthonsmartphone">';
+        print img_picto('', 'contact', '', false, 0, 0, '', 'paddingright').$form->selectarray("contactid", $listofemails, '', 0, 0, 0, '', 0, 0, 0, '', 'maxwidthonsmartphone');
         print '</td>';
         print '<td class="maxwidthonsmartphone">';
-        print $form->selectarray("actionid", $actions, '', 1, 0, 0, '', 0, 0, 0, '', 'maxwidthonsmartphone');
+        print img_picto('', 'object_action', '', false, 0, 0, '', 'paddingright').$form->selectarray("actionid", $actions, '', 1, 0, 0, '', 0, 0, 0, '', 'maxwidthonsmartphone');
         print '</td>';
         print '<td>';
         $type = array('email'=>$langs->trans("EMail"));
@@ -263,9 +259,7 @@ if ($result > 0)
         print '</td>';
         print '<td class="right"><input type="submit" class="button" value="'.$langs->trans("Add").'"></td>';
         print '</tr>';
-    }
-    else
-    {
+    } else {
         print '<tr class="oddeven"><td colspan="4" class="opacitymedium">';
         print $langs->trans("YouMustCreateContactFirst");
         print '</td></tr>';
@@ -293,9 +287,7 @@ if ($result > 0)
     if ($resql)
     {
         $num = $db->num_rows($resql);
-    }
-    else
-    {
+    } else {
         dol_print_error($db);
     }
 
@@ -324,7 +316,7 @@ if ($result > 0)
         {
             $obj = $db->fetch_object($resql);
 
-            $contactstatic->id = $obj->contactid;
+            $contactstatic->id = $obj->contact_id;
             $contactstatic->lastname = $obj->lastname;
             $contactstatic->firstname = $obj->firstname;
             print '<tr class="oddeven"><td>'.$contactstatic->getNomUrl(1);
@@ -333,9 +325,7 @@ if ($result > 0)
                 if (isValidEmail($obj->email))
                 {
                     print ' &lt;'.$obj->email.'&gt;';
-                }
-                else
-                {
+                } else {
                     $langs->load("errors");
                     print ' &nbsp; '.img_warning().' '.$langs->trans("ErrorBadEMail", $obj->email);
                 }
@@ -343,7 +333,7 @@ if ($result > 0)
             print '</td>';
             print '<td>';
             $label = ($langs->trans("Notify_".$obj->code) != "Notify_".$obj->code ? $langs->trans("Notify_".$obj->code) : $obj->label);
-            print $label;
+            print img_picto('', 'object_action', '', false, 0, 0, '', 'paddingright').$label;
             print '</td>';
             print '<td>';
             if ($obj->type == 'email') print $langs->trans("Email");
@@ -443,9 +433,7 @@ if ($result > 0)
     if ($resql)
     {
         $num = $db->num_rows($resql);
-    }
-    else
-    {
+    } else {
         dol_print_error($db);
     }
 
@@ -493,9 +481,7 @@ if ($result > 0)
 	            $contactstatic->firstname = $obj->firstname;
 	            print $contactstatic->getNomUrl(1);
 	            print $obj->email ? ' &lt;'.$obj->email.'&gt;' : $langs->trans("NoMail");
-            }
-            else
-			{
+            } else {
 				print $obj->email;
             }
             print '</td>';
@@ -522,13 +508,14 @@ if ($result > 0)
             $i++;
         }
         $db->free($resql);
+    } else {
+    	print '<tr><td colspan="4"><span class="opacitymedium">'.$langs->trans("None").'</span></td></tr>';
     }
 
     print '</table>';
 
     print '</form>';
-}
-else dol_print_error('', 'RecordNotFound');
+} else dol_print_error('', 'RecordNotFound');
 
 // End of page
 llxFooter();

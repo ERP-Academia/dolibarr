@@ -56,7 +56,7 @@ function accounting_prepare_head(AccountingAccount $object)
 	$head = array();
 
 	$head[$h][0] = DOL_URL_ROOT.'/accountancy/admin/card.php?id='.$object->id;
-	$head[$h][1] = $langs->trans("Card");
+	$head[$h][1] = $langs->trans("Asset");
 	$head[$h][2] = 'card';
 	$h++;
 
@@ -96,7 +96,7 @@ function length_accountg($account)
 
 	if ($account < 0 || is_empty($account)) return '';
 
-	if (!is_empty($conf->global->ACCOUNTING_MANAGE_ZERO)) return $account;
+	if (!empty($conf->global->ACCOUNTING_MANAGE_ZERO)) return $account;
 
 	$g = $conf->global->ACCOUNTING_LENGTH_GACCOUNT;
 	if (!is_empty($g)) {
@@ -131,7 +131,7 @@ function length_accounta($accounta)
 
 	if ($accounta < 0 || is_empty($accounta)) return '';
 
-	if (!is_empty($conf->global->ACCOUNTING_MANAGE_ZERO)) return $accounta;
+	if (!empty($conf->global->ACCOUNTING_MANAGE_ZERO)) return $accounta;
 
 	$a = $conf->global->ACCOUNTING_LENGTH_AACCOUNT;
 	if (!is_empty($a)) {

@@ -57,7 +57,7 @@ $socid = GETPOST('socid', 'int');
 $selected = GETPOST('orders_to_invoice');
 $sortfield		= GETPOST("sortfield", 'alpha');
 $sortorder		= GETPOST("sortorder", 'alpha');
-$viewstatut = GETPOST('viewstatut', 'alpha');
+$search_status = GETPOST('search_status', 'alpha');
 
 $error = 0;
 
@@ -83,9 +83,7 @@ if ($action == 'create')
 	{
 		$error++;
 		setEventMessages($langs->trans('Error_OrderNotChecked'), null, 'errors');
-	}
-	else
-	{
+	} else {
 		$origin = GETPOST('origin');
 		$originid = GETPOST('originid');
 	}
@@ -169,7 +167,6 @@ if (($action == 'create' || $action == 'add') && !$error)
 				$object->note_public		= trim($_POST['note_public']);
 				$object->note				= trim($_POST['note']);
 				$object->ref_client			= $_POST['ref_client'];
-				$object->ref_int = $_POST['ref_int'];
 				$object->modelpdf = $_POST['model'];
 				$object->fk_project			= $_POST['projectid'];
 				$object->cond_reglement_id	= ($_POST['type'] == 3 ? 1 : $_POST['cond_reglement_id']);
@@ -210,9 +207,7 @@ if (($action == 'create' || $action == 'add') && !$error)
 							if ($db->query($sql))
 							{
 								$db->commit();
-							}
-							else
-							{
+							} else {
 								$db->rollback();
 							}
 						}
@@ -257,16 +252,12 @@ if (($action == 'create' || $action == 'add') && !$error)
 										{
 											$result = $object->insert_discount($discountid);
 											//$result=$discount->link_to_invoice($lineid,$id);
-										}
-										else
-										{
+										} else {
 											setEventMessages($discount->error, $discount->errors, 'errors');
 											$error++;
 											break;
 										}
-									}
-									else
-									{
+									} else {
 										// Positive line
 										$product_type = ($lines[$i]->product_type ? $lines[$i]->product_type : 0);
 										// Date start
@@ -286,7 +277,7 @@ if (($action == 'create' || $action == 'add') && !$error)
 										}
 
 										// Extrafields
-										if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED) && method_exists($lines[$i], 'fetch_optionals')) {
+										if (method_exists($lines[$i], 'fetch_optionals')) {
 											$lines[$i]->fetch_optionals();
 											$array_options = $lines[$i]->array_options;
 										}
@@ -321,9 +312,7 @@ if (($action == 'create' || $action == 'add') && !$error)
 										if ($result > 0)
 										{
 											$lineid = $result;
-										}
-										else
-										{
+										} else {
 											$lineid = 0;
 											$error++;
 											break;
@@ -335,17 +324,13 @@ if (($action == 'create' || $action == 'add') && !$error)
 										}
 									}
 								}
-							}
-							else
-							{
+							} else {
 								setEventMessages($objectsrc->error, $objectsrc->errors, 'errors');
 								$error++;
 							}
 							$ii++;
 						}
-					}
-					else
-					{
+					} else {
 						setEventMessages($object->error, $object->errors, 'errors');
 						$error++;
 					}
@@ -359,9 +344,7 @@ if (($action == 'create' || $action == 'add') && !$error)
 			$db->commit();
 			header('Location: '.DOL_URL_ROOT.'/compta/facture/card.php?facid='.$id);
 			exit;
-		}
-		else
-		{
+		} else {
 			$db->rollback();
 			$action = 'create';
 			$_GET["origin"] = $_POST["origin"];
@@ -407,8 +390,6 @@ if ($action == 'create' && !$error)
 	print '<input type="hidden" name="action" value="add">';
 	print '<input type="hidden" name="socid" value="'.$soc->id.'">'."\n";
 	print '<input name="ref" type="hidden" value="provisoire">';
-	print '<input name="ref_client" type="hidden" value="'.$ref_client.'">';
-	print '<input name="ref_int" type="hidden" value="'.$ref_int.'">';
 	print '<input type="hidden" name="origin" value="'.GETPOST('origin').'">';
 	print '<input type="hidden" name="originid" value="'.GETPOST('originid').'">';
 	print '<input type="hidden" name="autocloseorders" value="'.GETPOST('autocloseorders').'">';
@@ -732,9 +713,7 @@ if (($action != 'create' && $action != 'add') || ($action == 'create' && $error)
 		print '</form>';
 
 		$db->free($resql);
-	}
-	else
-	{
+	} else {
 		dol_print_error($db);
 	}
 }

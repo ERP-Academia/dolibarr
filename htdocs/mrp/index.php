@@ -51,7 +51,7 @@ $staticmo = new Mo($db);
 
 llxHeader('', $langs->trans("MRP"), '');
 
-print load_fiche_titre($langs->trans("MRPArea"), '', 'cubes');
+print load_fiche_titre($langs->trans("MRPArea"), '', 'mrp');
 
 
 print '<div class="fichecenter"><div class="fichethirdleft">';
@@ -136,9 +136,7 @@ if ($conf->use_javascript_ajax)
     	print "</div>";
 
     	print "<br>";
-    }
-    else
-    {
+    } else {
     	dol_print_error($db);
     }
 }
@@ -195,9 +193,7 @@ if ($resql)
 	}
 	print "</table></div>";
 	print "<br>";
-}
-else
-{
+} else {
 	dol_print_error($db);
 }
 
@@ -248,9 +244,7 @@ if ($resql)
     }
     print "</table></div>";
     print "<br>";
-}
-else
-{
+} else {
     dol_print_error($db);
 }
 

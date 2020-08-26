@@ -141,9 +141,7 @@ class box_activity extends ModeleBoxes
         		} else {
         			dol_print_error($this->db);
         		}
-        	}
-        	else
-        	{
+        	} else {
         		$data = dol_readcachefile($cachedir, $filename);
         	}
 
@@ -154,7 +152,7 @@ class box_activity extends ModeleBoxes
         		{
         			$this->info_box_contents[$line][0] = array(
                         'td' => 'class="left" width="16"',
-                        'url' => DOL_URL_ROOT."/comm/propal/list.php?mainmenu=commercial&amp;leftmenu=propals&amp;viewstatut=".$data[$j]->fk_statut,
+                        'url' => DOL_URL_ROOT."/comm/propal/list.php?mainmenu=commercial&amp;leftmenu=propals&amp;search_status=".$data[$j]->fk_statut,
                         'tooltip' => $langs->trans("Proposals")."&nbsp;".$propalstatic->LibStatut($data[$j]->fk_statut, 0),
                         'logo' => 'object_propal'
         			);
@@ -168,7 +166,7 @@ class box_activity extends ModeleBoxes
                         'td' => 'class="right"',
                         'text' => $data[$j]->nb,
                         'tooltip' => $langs->trans("Proposals")."&nbsp;".$propalstatic->LibStatut($data[$j]->fk_statut, 0),
-                        'url' => DOL_URL_ROOT."/comm/propal/list.php?mainmenu=commercial&amp;leftmenu=propals&amp;viewstatut=".$data[$j]->fk_statut,
+                        'url' => DOL_URL_ROOT."/comm/propal/list.php?mainmenu=commercial&amp;leftmenu=propals&amp;search_status=".$data[$j]->fk_statut,
         			);
         			$totalnb += $data[$j]->nb;
 
@@ -236,7 +234,7 @@ class box_activity extends ModeleBoxes
                 while ($j < count($data)) {
                     $this->info_box_contents[$line][0] = array(
                         'td' => 'class="left" width="16"',
-                        'url' => DOL_URL_ROOT."/commande/list.php?mainmenu=commercial&amp;leftmenu=orders&amp;viewstatut=".$data[$j]->fk_statut,
+                        'url' => DOL_URL_ROOT."/commande/list.php?mainmenu=commercial&amp;leftmenu=orders&amp;search_status=".$data[$j]->fk_statut,
                         'tooltip' => $langs->trans("Orders")."&nbsp;".$commandestatic->LibStatut($data[$j]->fk_statut, 0, 0),
                         'logo' => 'object_order',
                     );
@@ -250,7 +248,7 @@ class box_activity extends ModeleBoxes
                         'td' => 'class="right"',
                         'text' => $data[$j]->nb,
                         'tooltip' => $langs->trans("Orders")."&nbsp;".$commandestatic->LibStatut($data[$j]->fk_statut, 0, 0),
-                        'url' => DOL_URL_ROOT."/commande/list.php?mainmenu=commercial&amp;leftmenu=orders&amp;viewstatut=".$data[$j]->fk_statut,
+                        'url' => DOL_URL_ROOT."/commande/list.php?mainmenu=commercial&amp;leftmenu=orders&amp;search_status=".$data[$j]->fk_statut,
                     );
                     $totalnb += $data[$j]->nb;
 

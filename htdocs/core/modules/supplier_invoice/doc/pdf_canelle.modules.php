@@ -65,9 +65,9 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
     /**
      * @var array Minimum version of PHP required by module.
-     * e.g.: PHP ≥ 5.5 = array(5, 5)
+     * e.g.: PHP ≥ 5.6 = array(5, 6)
      */
-	public $phpmin = array(5, 5);
+	public $phpmin = array(5, 6);
 
 	/**
      * Dolibarr version of the loaded document
@@ -233,9 +233,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 			{
 				$dir = $conf->fournisseur->facture->dir_output;
 				$file = $dir."/SPECIMEN.pdf";
-			}
-			else
-			{
+			} else {
 				$objectref = dol_sanitizeFileName($object->ref);
 				$objectrefsupplier = dol_sanitizeFileName($object->ref_supplier);
                 $dir = $conf->fournisseur->facture->dir_output.'/'.get_exdir($object->id, 2, 0, 0, $object, 'invoice_supplier').$objectref;
@@ -358,8 +356,10 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 					}
 				}
 
-				// Display notes
-				if (!empty($object->note_public))
+				// Displays notes
+				$notetoshow = empty($object->note_public) ? '' : $object->note_public;
+
+				if ($notetoshow)
 				{
 					$tab_top -= 2;
 
@@ -424,18 +424,14 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 								if (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)) $this->_pagehead($pdf, $object, 0, $outputlangs);
 								$pdf->setPage($pageposafter + 1);
 							}
-						}
-						else
-						{
+						} else {
 							// We found a page break
 							// Allows data in the first page if description is long enough to break in multiples pages
 							if (!empty($conf->global->MAIN_PDF_DATA_ON_FIRST_PAGE))
 								$showpricebeforepagebreak = 1;
-							else
-								$showpricebeforepagebreak = 0;
+							else $showpricebeforepagebreak = 0;
 						}
-					}
-					else	// No pagebreak
+					} else // No pagebreak
 					{
 						$pdf->commitTransaction();
 					}
@@ -535,9 +531,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 						if ($pagenb == 1)
 						{
 							$this->_tableau($pdf, $tab_top, $this->page_hauteur - $tab_top - $heightforfooter, 0, $outputlangs, 0, 1, $object->multicurrency_code);
-						}
-						else
-						{
+						} else {
 							$this->_tableau($pdf, $tab_top_newpage, $this->page_hauteur - $tab_top_newpage - $heightforfooter, 0, $outputlangs, 1, 1, $object->multicurrency_code);
 						}
 						$this->_pagefoot($pdf, $object, $outputlangs, 1);
@@ -551,9 +545,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 						if ($pagenb == 1)
 						{
 							$this->_tableau($pdf, $tab_top, $this->page_hauteur - $tab_top - $heightforfooter, 0, $outputlangs, 0, 1, $object->multicurrency_code);
-						}
-						else
-						{
+						} else {
 							$this->_tableau($pdf, $tab_top_newpage, $this->page_hauteur - $tab_top_newpage - $heightforfooter, 0, $outputlangs, 1, 1, $object->multicurrency_code);
 						}
 						$this->_pagefoot($pdf, $object, $outputlangs, 1);
@@ -570,9 +562,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 				{
 					$this->_tableau($pdf, $tab_top, $this->page_hauteur - $tab_top - $heightforinfotot - $heightforfreetext - $heightforfooter, 0, $outputlangs, 0, 0, $object->multicurrency_code);
 					$bottomlasttab = $this->page_hauteur - $heightforinfotot - $heightforfreetext - $heightforfooter + 1;
-				}
-				else
-				{
+				} else {
 					$this->_tableau($pdf, $tab_top_newpage, $this->page_hauteur - $tab_top_newpage - $heightforinfotot - $heightforfreetext - $heightforfooter, 0, $outputlangs, 1, 0, $object->multicurrency_code);
 					$bottomlasttab = $this->page_hauteur - $heightforinfotot - $heightforfreetext - $heightforfooter + 1;
 				}
@@ -614,15 +604,11 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 				$this->result = array('fullpath'=>$file);
 
 				return 1; // No error
-			}
-			else
-			{
+			} else {
 				$this->error = $langs->transnoentities("ErrorCanNotCreateDir", $dir);
 				return 0;
 			}
-		}
-		else
-		{
+		} else {
 			$this->error = $langs->transnoentities("ErrorConstantNotDefined", "SUPPLIER_OUTPUTDIR");
 			return 0;
 		}
@@ -633,7 +619,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	/**
 	 *	Show total to pay
 	 *
-	 *	@param	PDF			$pdf            Object PDF
+	 *	@param	TCPDF		$pdf            Object PDF
 	 *	@param  Object		$object         Object invoice
 	 *	@param  int			$deja_regle     Amount already paid (in the currency of invoice)
 	 *	@param	int			$posy			Position depart
@@ -732,9 +718,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 				$pdf->SetXY($col2x, $tab2_top + $tab2_hl * $index);
 				$pdf->MultiCell($largcol2, $tab2_hl, price($object->total_localtax2, 0, $outputlangs), 0, 'R', 1);
 			}
-		}
-		else
-		{
+		} else {
 			//if (! empty($conf->global->FACTURE_LOCAL_TAX1_OPTION) && $conf->global->FACTURE_LOCAL_TAX1_OPTION=='localtax1on')
 			//{
 			//Local tax 1
@@ -861,7 +845,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	/**
 	 *   Show table for lines
 	 *
-	 *   @param		PDF			$pdf     		Object PDF
+	 *   @param		TCPDF		$pdf     		Object PDF
 	 *   @param		string		$tab_top		Top position of table
 	 *   @param		string		$tab_height		Height of table (rectangle)
 	 *   @param		int			$nexY			Y (not used)
@@ -967,7 +951,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	/**
 	 *  Show payments table
 	 *
-	 *  @param  PDF                 $pdf            Object PDF
+	 *  @param  TCPDF               $pdf            Object PDF
 	 *  @param  Object			    $object         Object to show
 	 *  @param  int                 $posy           Position y in PDF
 	 *  @param  Translate           $outputlangs    Object langs for output
@@ -1048,9 +1032,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 				$i++;
 			}
-		}
-		else
-		{
+		} else {
 			$this->error = $this->db->lasterror();
 			return -1;
 		}
@@ -1060,7 +1042,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	/**
 	 *  Show top header of page.
 	 *
-	 *  @param  PDF                 $pdf            Object PDF
+	 *  @param  TCPDF               $pdf            Object PDF
 	 *  @param  FactureFournisseur  $object         Object to show
 	 *  @param  int                 $showaddress    0=no, 1=yes
 	 *  @param  Translate           $outputlangs    Object lang for output
@@ -1147,9 +1129,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 			$pdf->SetXY($posx, $posy);
 			$pdf->SetTextColor(0, 0, 60);
 			$pdf->MultiCell(100, 4, $outputlangs->transnoentities("Date")." : ".dol_print_date($object->date, "day", false, $outputlangs, true), '', 'R');
-		}
-		else
-		{
+		} else {
 			$posy += 4;
 			$pdf->SetXY($posx, $posy);
 			$pdf->SetTextColor(255, 0, 0);
@@ -1274,7 +1254,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
     /**
      *  Show footer of page. Need this->emetteur object
      *
-     *  @param  PDF                 $pdf                PDF
+     *  @param  TCPDF               $pdf                PDF
      *  @param  FactureFournisseur  $object             Object to show
      *  @param  Translate           $outputlangs        Object lang for output
      *  @param  int                 $hidefreetext       1=Hide free text

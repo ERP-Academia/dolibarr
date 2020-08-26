@@ -34,7 +34,7 @@ class modExpenseReport extends DolibarrModules
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
-	 *   @param		Database	$db      Database handler
+	 *   @param		DoliDb	$db      Database handler
 	 */
 	public function __construct($db)
 	{
@@ -102,7 +102,7 @@ class modExpenseReport extends DolibarrModules
 		$r++;
 
 		// Array to add new pages in new tabs
-		$this->tabs[] = array('data'=>'user:+expensereport:ExpenseReport:expensereport:$user->rights->expensereport->lire:/expensereport/list.php?mainmenu=hrm&id=__ID__');
+		$this->tabs[] = array();
 
 		// Boxes
 		$this->boxes = array(); // List of boxes

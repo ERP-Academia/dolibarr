@@ -149,7 +149,7 @@ class HookManager
         $parameters['context'] = join(':', $this->contextarray);
         //dol_syslog(get_class($this).'::executeHooks method='.$method." action=".$action." context=".$parameters['context']);
 
-        // Define type of hook ('output' or 'addreplace'. 'returnvalue' is deprecated because a 'addreplace' hook can also return resPrint and resArray).
+        // Define type of hook ('output' or 'addreplace'). Type 'returnvalue' is deprecated because a 'addreplace' hook can also return resPrint and resArray).
         $hooktype = 'output';
         if (in_array(
 			$method,
@@ -199,6 +199,7 @@ class HookManager
 			    'pdf_getlinetotalwithtax',
 				'paymentsupplierinvoices',
 				'printAddress',
+				'printEmail',
 				'printSearchForm',
 				'printTabsHead',
 				'printObjectLine',
@@ -206,6 +207,7 @@ class HookManager
 				'restrictedArea',
 				'sendMail',
 				'sendMailAfter',
+				'showOptionals',
 				'showLinkToObjectBlock',
 				'setContentSecurityPolicy',
 				'setHtmlTitle',
@@ -265,8 +267,7 @@ class HookManager
                     	if (!empty($actionclassinstance->resprints)) $this->resPrint .= $actionclassinstance->resprints;
                     }
                     // Generic hooks that return a string or array (printLeftBlock, formAddObjectLine, formBuilddocOptions, ...)
-                    else
-					{
+                    else {
                     	// TODO. this test should be done into the method of hook by returning nothing
                     	if (is_array($parameters) && !empty($parameters['special_code']) && $parameters['special_code'] > 3 && $parameters['special_code'] != $actionclassinstance->module_number) continue;
 

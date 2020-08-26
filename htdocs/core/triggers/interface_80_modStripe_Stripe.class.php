@@ -33,7 +33,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
 /**
  *  Class of triggers for stripe module
  */
-class InterfaceStripe
+class InterfaceStripe extends DolibarrTriggers
 {
     /**
      * @var DoliDB Database handler.
@@ -53,7 +53,7 @@ class InterfaceStripe
 	    $this->family = 'stripe';
         $this->description = "Triggers of the module Stripe";
         $this->version = 'dolibarr'; // 'development', 'experimental', 'dolibarr' or version
-        $this->picto = 'stripe@stripe';
+        $this->picto = 'stripe';
     }
 
 	/**
@@ -75,29 +75,6 @@ class InterfaceStripe
 	public function getDesc()
 	{
 		return $this->description;
-	}
-
-	/**
-	 * Trigger version
-	 *
-	 * @return string Version of trigger file
-	 */
-	public function getVersion()
-	{
-		global $langs;
-		$langs->load("admin");
-
-		if ($this->version == 'development') {
-			return $langs->trans("Development");
-		} elseif ($this->version == 'experimental') {
-			return $langs->trans("Experimental");
-		} elseif ($this->version == 'dolibarr') {
-			return DOL_VERSION;
-		} elseif ($this->version) {
-			return $this->version;
-		} else {
-			return $langs->trans("Unknown");
-		}
 	}
 
 	/**
@@ -200,9 +177,7 @@ class InterfaceStripe
 										//$taxids = $customer->allTaxIds($customer->id);
 										$customer->createTaxId($customer->id, array('type'=>'eu_vat', 'value'=>$vatcleaned));
 									}
-								}
-								else
-								{
+								} else {
 									$taxids = $customer->allTaxIds($customer->id);
 									if (is_array($taxids->data))
 									{
@@ -216,8 +191,7 @@ class InterfaceStripe
 
 							// Update Customer on Stripe
 							$customer->save();
-						}
-						catch (Exception $e)
+						} catch (Exception $e)
 						{
 						    //var_dump(\Stripe\Stripe::getApiVersion());
 							$this->errors[] = $e->getMessage();
@@ -230,17 +204,19 @@ class InterfaceStripe
 		if ($action == 'COMPANY_DELETE') {
 			dol_syslog("Trigger '".$this->name."' for action '$action' launched by ".__FILE__.". id=".$object->id);
 
-			$stripeacc = $stripe->getStripeAccount($service); // No need of network access for this. May return '' if no Oauth defined.
+			if (! empty($conf->global->STRIPE_DELETE_STRIPE_ACCOUNT_WHEN_DELETING_THIRPARTY)) {
+				// By default, we do not delete the stripe account. We may need to reuse it with its payment_intent, for example if delete is for a merge of thirdparties.
+				$stripeacc = $stripe->getStripeAccount($service); // No need of network access for this. May return '' if no Oauth defined.
 
-			$customer = $stripe->customerStripe($object, $stripeacc, $servicestatus);
-			if ($customer)
-			{
-				try {
-					$customer->delete();
-				}
-				catch (Exception $e)
+				$customer = $stripe->customerStripe($object, $stripeacc, $servicestatus);
+				if ($customer)
 				{
-					dol_syslog("Failed to delete Stripe customer ".$e->getMessage(), LOG_WARNING);
+					try {
+						$customer->delete();
+					} catch (Exception $e)
+					{
+						dol_syslog("Failed to delete Stripe customer ".$e->getMessage(), LOG_WARNING);
+					}
 				}
 			}
 
@@ -277,8 +253,7 @@ class InterfaceStripe
 							$card->metadata = array('dol_id'=>$object->id, 'dol_version'=>DOL_VERSION, 'dol_entity'=>$conf->entity, 'ipaddress'=>(empty($_SERVER['REMOTE_ADDR']) ? '' : $_SERVER['REMOTE_ADDR']));
 							try {
 								$card->save();
-							}
-							catch (Exception $e)
+							} catch (Exception $e)
 							{
 								$ok = -1;
 								$this->error = $e->getMessages();

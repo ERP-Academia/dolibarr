@@ -123,9 +123,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 		        if (!empty($moreparams['force_dir_output'])) $dir = $moreparams['force_dir_output'];
 		        else $dir = $conf->bank->dir_output;
 		        $file = $dir."/SPECIMEN.pdf";
-		    }
-		    else
-		    {
+		    } else {
 		        $objectref = dol_sanitizeFileName($object->ref);
 		        if (!empty($moreparams['force_dir_output'])) $dir = $moreparams['force_dir_output'];
 		        else $dir = $conf->bank->dir_output."/".$objectref;
@@ -209,9 +207,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 
 					$tab_height = $tab_height - $height_note;
 					$tab_top = $nexY + 6;
-				}
-				else
-				{
+				} else {
 					$height_note = 0;
 				}
 
@@ -227,14 +223,14 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 				$posY += 2;
 
 				$pdf->SetXY($this->marge_gauche, $posY);
-				$pdf->MultiCell($this->page_largeur - $this->marge_gauche - $this->marge_droite, 3, $outputlangs->transnoentitiesnoconv("RUMLong").' ('.$outputlangs->transnoentitiesnoconv("RUM").')'.' : '.$object->rum, 0, 'L');
+				$pdf->MultiCell($this->page_largeur - $this->marge_gauche - $this->marge_droite, 3, $outputlangs->transnoentitiesnoconv("RUMLong").' ('.$outputlangs->transnoentitiesnoconv("RUM").') : '.$object->rum, 0, 'L');
 
 				$posY = $pdf->GetY();
 				$posY += 2;
 				$pdf->SetXY($this->marge_gauche, $posY);
 				$ics = '';
 				if (!empty($conf->global->PRELEVEMENT_ICS)) $ics = $conf->global->PRELEVEMENT_ICS;
-				$pdf->MultiCell($this->page_largeur - $this->marge_gauche - $this->marge_droite, 3, $outputlangs->transnoentitiesnoconv("CreditorIdentifier").' ('.$outputlangs->transnoentitiesnoconv("ICS").')'.' : '.$ics, 0, 'L');
+				$pdf->MultiCell($this->page_largeur - $this->marge_gauche - $this->marge_droite, 3, $outputlangs->transnoentitiesnoconv("CreditorIdentifier").' ('.$outputlangs->transnoentitiesnoconv("ICS").') : '.$ics, 0, 'L');
 
 				$posY = $pdf->GetY();
 				$posY += 1;
@@ -367,9 +363,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 				{
 					$this->_tableau($pdf, $tab_top, $this->page_hauteur - $tab_top - $heightforinfotot - $heightforfreetext - $heightforfooter, 0, $outputlangs, 0, 0);
 					$bottomlasttab = $this->page_hauteur - $heightforinfotot - $heightforfreetext - $heightforfooter + 1;
-				}
-				else
-				{
+				} else {
 					$this->_tableau($pdf, $tab_top_newpage, $this->page_hauteur - $tab_top_newpage - $heightforinfotot - $heightforfreetext - $heightforfooter, 0, $outputlangs, 1, 0);
 					$bottomlasttab = $this->page_hauteur - $heightforinfotot - $heightforfreetext - $heightforfooter + 1;
 				}
@@ -415,9 +409,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 				$this->result = array('fullpath'=>$file);
 
 				return 1; // No error
-			}
-			else
-			{
+			} else {
 				$this->error = $langs->transnoentities("ErrorCanNotCreateDir", $dir);
 				return 0;
 			}
@@ -432,7 +424,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 	/**
 	 *   Show table for lines
 	 *
-	 *   @param		PDF			$pdf     		Object PDF
+	 *   @param		TCPDF		$pdf     		Object PDF
 	 *   @param		string		$tab_top		Top position of table
 	 *   @param		string		$tab_height		Height of table (rectangle)
 	 *   @param		int			$nexY			Y
@@ -455,7 +447,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 	/**
 	 *   Show miscellaneous information (payment mode, payment term, ...)
 	 *
-	 *   @param		PDF			$pdf     		Object PDF
+	 *   @param		TCPDF		$pdf     		Object PDF
 	 *   @param		Object		$object			Object to show
 	 *   @param		int			$posy			Y
 	 *   @param		Translate	$outputlangs	Langs object
@@ -493,7 +485,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 	/**
 	 *	Show area for the customer to sign
 	 *
-	 *	@param	PDF			$pdf            Object PDF
+	 *	@param	TCPDF		$pdf           Object PDF
 	 *	@param  Facture		$object         Object invoice
 	 *	@param	int			$posy			Position depart
 	 *	@param	Translate	$outputlangs	Objet langs
@@ -535,7 +527,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 	/**
 	 *  Show top header of page.
 	 *
-	 *  @param	PDF			$pdf     		Object PDF
+	 *  @param	TCPDF		$pdf     		Object PDF
 	 *  @param  Project		$object     	Object to show
 	 *  @param  int	    	$showaddress    0=no, 1=yes
 	 *  @param  Translate	$outputlangs	Object lang for output
@@ -566,16 +558,13 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 			{
 			    $height = pdf_getHeightForLogo($logo);
 			    $pdf->Image($logo, $this->marge_gauche, $posy, 0, $height); // width=0 (auto)
-			}
-			else
-			{
+			} else {
 				$pdf->SetTextColor(200, 0, 0);
 				$pdf->SetFont('', 'B', $default_font_size - 2);
 				$pdf->MultiCell(100, 3, $langs->transnoentities("ErrorLogoFileNotFound", $logo), 0, 'L');
 				$pdf->MultiCell(100, 3, $langs->transnoentities("ErrorGoToModuleSetup"), 0, 'L');
 			}
-		}
-		else $pdf->MultiCell(100, 4, $outputlangs->transnoentities($this->emetteur->name), 0, 'L');
+		} else $pdf->MultiCell(100, 4, $outputlangs->transnoentities($this->emetteur->name), 0, 'L');
 
 		$pdf->SetFont('', 'B', $default_font_size + 3);
 		$pdf->SetXY($posx, $posy);
@@ -590,8 +579,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 		if (!empty($object->date_rum))
 		{
             $daterum = dol_print_date($object->date_rum, 'day', false, $outputlangs, true);
-		}
-		else $daterum = dol_print_date($object->datec, 'day', false, $outputlangs, true); // For old record, the date_rum was not saved.
+		} else $daterum = dol_print_date($object->datec, 'day', false, $outputlangs, true); // For old record, the date_rum was not saved.
 		$pdf->MultiCell(100, 4, $outputlangs->transnoentities("Date")." : ".$daterum, '', 'R');
 		/*$posy+=6;
 		$pdf->SetXY($posx,$posy);
@@ -629,7 +617,7 @@ class pdf_sepamandate extends ModeleBankAccountDoc
 	/**
 	 *   	Show footer of page. Need this->emetteur object
      *
-	 *   	@param	PDF			$pdf     			PDF
+	 *   	@param	TCPDF		$pdf     			PDF
 	 * 		@param	Project		$object				Object to show
 	 *      @param	Translate	$outputlangs		Object lang for output
 	 *      @param	int			$hidefreetext		1=Hide free text

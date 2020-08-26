@@ -55,7 +55,7 @@ class modWebsite extends DolibarrModules
         // Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
         // Name of image file used for this module.
-        $this->picto = 'globe';
+        $this->picto = 'website';
 
 		// Data directories to create when module is enabled
 		$this->dirs = array("/website/temp");
@@ -158,11 +158,11 @@ class modWebsite extends DolibarrModules
     	$this->remove($options);
 
     	// Copy flags and octicons directory
-    	$dirarray = array('common/flags', 'common/octicons');
-    	foreach ($dirarray as $dir)
+    	$dirarray = array('common/flags'=>'flags', 'common/octicons/build/svg'=>'octicons');
+    	foreach ($dirarray as $dirfrom => $dirtarget)
     	{
-	    	$src = DOL_DOCUMENT_ROOT.'/theme/'.$dir;
-	    	$dest = DOL_DATA_ROOT.'/medias/image/'.$dir;
+	    	$src = DOL_DOCUMENT_ROOT.'/theme/'.$dirfrom;
+	    	$dest = DOL_DATA_ROOT.'/medias/image/'.$dirtarget;
 
 	    	if (is_dir($src))
 	    	{

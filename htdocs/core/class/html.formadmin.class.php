@@ -58,11 +58,11 @@ class FormAdmin
 	 *  @param      int         $showcode       1=Add language code into label at begining, 2=Add language code into label at end
      *  @param		int			$forcecombo		Force to use combo box (so no ajax beautify effect)
      *  @param		int			$multiselect	Make the combo a multiselect
-     *  @param		array		$onlykeys		Show only the following keys (opposite of $filter)
+     *  @param		array		$onlykeys		Show only the following keys (opposite of $filter). Example array('fr', 'es', ...)
      *  @param		int			$mainlangonly	1=Show only main languages ('fr_FR' no' fr_BE', 'es_ES' not 'es_MX', ...)
      *  @return		string						Return HTML select string with list of languages
      */
-    public function select_language($selected = '', $htmlname = 'lang_id', $showauto = 0, $filter = null, $showempty = '', $showwarning = 0, $disabled = 0, $morecss = '', $showcode = 0, $forcecombo = 0, $multiselect = 0, $onlykeys = array(), $mainlangonly = 0)
+    public function select_language($selected = '', $htmlname = 'lang_id', $showauto = 0, $filter = null, $showempty = '', $showwarning = 0, $disabled = 0, $morecss = '', $showcode = 0, $forcecombo = 0, $multiselect = 0, $onlykeys = null, $mainlangonly = 0)
 	{
 		// phpcs:enable
 		global $conf, $langs;
@@ -114,9 +114,7 @@ class FormAdmin
 			if ($selected == $keytouse)
 			{
 				$out .= '<option value="'.$keytouse.'" selected>'.$valuetoshow.'</option>';
-			}
-			else
-			{
+			} else {
 				$out .= '<option value="'.$keytouse.'">'.$valuetoshow.'</option>';
 			}
 		}
@@ -184,9 +182,7 @@ class FormAdmin
     	                        if ($file == $selected)
     	                        {
     	        					$menuarray[$prefix.'_'.$file] = '<option value="'.$file.'" selected>'.$filelib.'</option>';
-    	                        }
-    	                        else
-    	                        {
+    	                        } else {
     	                            $menuarray[$prefix.'_'.$file] = '<option value="'.$file.'">'.$filelib.'</option>';
     	                        }
     	                    }
@@ -385,9 +381,7 @@ class FormAdmin
 
                 $i++;
             }
-        }
-        else
-		{
+        } else {
 			dol_print_error($this->db);
 			return '';
 		}
@@ -405,9 +399,7 @@ class FormAdmin
             if ($selected == $key)
 			{
 				$out .= '<option value="'.$key.'" selected>'.$value.'</option>';
-			}
-			else
-			{
+			} else {
 				$out .= '<option value="'.$key.'">'.$value.'</option>';
 			}
 		}
